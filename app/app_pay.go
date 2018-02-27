@@ -64,7 +64,7 @@ type PayNotifyResponse struct {
 	ReturnMsg  string `xml:"return_msg"`
 }
 
-func (this *WeAppClient) GetPayNotifyRequest(w http.ResponseWriter, r *http.Request) (*PayNotifyRequest, *errmsg.ErrMsg) {
+func (this *WeAppClient) GetPayNotifyRequest(w http.ResponseWriter, r *http.Request) (*PayNotifyRequest, error) {
 	var err *errmsg.ErrMsg
 
 	request := &PayNotifyRequest{}
@@ -147,7 +147,7 @@ type PayPackage struct {
 	PaySign   string `json:"paySign"`
 }
 
-func (this *WeAppClient) GeneratePayPackage(request *UnifiedOrderRequest) (*PayPackage, *errmsg.ErrMsg) {
+func (this *WeAppClient) GeneratePayPackage(request *UnifiedOrderRequest) (*PayPackage, error) {
 	request.AppId = this.Base.AppId
 	request.MchId = this.Base.PayId
 	request.NonceStr = util.RandString(32)
