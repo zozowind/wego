@@ -19,7 +19,3 @@ type WeBase struct {
 	TokenServer TokenServer
 	HttpClient  *http.Client
 }
-
-func (this *WeBase) GetToken() (string, error) {
-	return this.TokenServer.Get()
-}

@@ -17,7 +17,7 @@ type WxErrorResponse struct {
 
 func (this *WeBase) PostWithToken(urlTemp string, param interface{}) ([]byte, error) {
 	data := []byte{}
-	token, err := this.GetToken()
+	token, err := this.Token()
 	if nil != err {
 		return data, err
 	}
