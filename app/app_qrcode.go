@@ -53,5 +53,5 @@ func (this *QrcodeC) Url() string {
 }
 
 func (this *WeAppClient) GetQrcode(qrcode Qrcode) ([]byte, error) {
-	return this.Base.PostWithToken(qrcode.Url(), qrcode)
+	return this.Base.GetResponseWithToken(qrcode.Url(), qrcode)
 }

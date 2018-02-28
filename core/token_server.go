@@ -1,7 +1,6 @@
 package core
 
 import (
-	"fmt"
 	"math/rand"
 	"time"
 )
@@ -95,5 +94,5 @@ func (this *CacheTokenServer) RefreshToken() (string, error) {
 	if nil != err {
 		return "", err
 	}
-	return accessToken.Token, fmt.Errorf("code %d, msg %s", accessToken.ErrCode, accessToken.ErrMsg)
+	return accessToken.Token, nil
 }

@@ -15,7 +15,7 @@ type WxErrorResponse struct {
 	Message string `json:"errmsg"`
 }
 
-func (this *WeBase) PostWithToken(urlTemp string, param interface{}) ([]byte, error) {
+func (this *WeBase) GetResponseWithToken(urlTemp string, param interface{}) ([]byte, error) {
 	data := []byte{}
 	token, err := this.Token()
 	if nil != err {
@@ -23,6 +23,11 @@ func (this *WeBase) PostWithToken(urlTemp string, param interface{}) ([]byte, er
 	}
 	url := fmt.Sprintf(urlTemp, token)
 	data, err = util.HttpJsonPost(this.HttpClient, url, param)
+	return data, err
+}
+
+func (this *WeBase) PostWithToken(urlTemp string, param interface{}) ([]byte, error) {
+	data, err := this.GetResponseWithToken(urlTemp, param)
 	if nil != err {
 		return data, err
 	}
