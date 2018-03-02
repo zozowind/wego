@@ -12,7 +12,7 @@ const (
 
 //Qrcode qrcode interface
 type Qrcode interface {
-	Url() string
+	URL() string
 }
 
 //RGB rgb color struct in qrcode
@@ -62,5 +62,5 @@ func (qr *QrcodeC) URL() string {
 
 //GetQrcode get wechat app qrcode
 func (client *WeAppClient) GetQrcode(qrcode Qrcode) ([]byte, error) {
-	return client.Base.GetResponseWithToken(qrcode.Url(), qrcode)
+	return client.Base.GetResponseWithToken(qrcode.URL(), qrcode)
 }
