@@ -8,14 +8,16 @@ import (
 )
 
 const (
-	AccessTokenUrl = WxApiUrl + "/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s"
+	accessTokenURL = WxAPIURL + "/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s"
 )
 
+//TokenServer token server interface
 type TokenServer interface {
 	Token() (string, error)        // 获取 access_token
 	RefreshToken() (string, error) //刷新 access_token
 }
 
+//AccessToken wechat access token struct
 type AccessToken struct {
 	Token     string `json:"access_token"`
 	ExpiresIn int64  `json:"expires_in"`
@@ -23,14 +25,16 @@ type AccessToken struct {
 	ErrMsg    string `json:"errmsg"`
 }
 
-func (this *WeBase) Token() (string, error) {
-	return this.TokenServer.Token()
+//Token get wechat access token
+func (wb *WeBase) Token() (string, error) {
+	return wb.TokenServer.Token()
 }
 
-func (this *WeBase) RequestToken() (*AccessToken, error) {
+//RequestToken request wechat access token
+func (wb *WeBase) RequestToken() (*AccessToken, error) {
 	acceseToken := &AccessToken{}
 	//请求接口
-	data, err := util.HttpGet(this.HttpClient, fmt.Sprintf(AccessTokenUrl, this.AppId, this.AppSecret))
+	data, err := util.HTTPGet(wb.HTTPClient, fmt.Sprintf(accessTokenURL, wb.AppID, wb.AppSecret))
 	if nil != err {
 		return acceseToken, err
 	}

@@ -5,11 +5,11 @@ import (
 )
 
 var (
-	errPayNotifyData      = &errmsg.ErrMsg{-2001, "支付通知数据错误", ""}
-	errPayNotifySignCheck = &errmsg.ErrMsg{-2002, "支付通知签名校验错误", ""}
-	errPayNotifyResult    = &errmsg.ErrMsg{-2003, "支付通知结果错误", ""}
-	errUnifiedOrderReq    = &errmsg.ErrMsg{-2004, "订单请求错误", ""}
-	errUnifiedOrderRsp    = &errmsg.ErrMsg{-2005, "订单请求返回错误", ""}
-	errUnifiedOrderResult = &errmsg.ErrMsg{-2006, "订单生成错误", ""}
-	errPayPackage         = &errmsg.ErrMsg{-2007, "支付包生成错误", ""}
+	errPayNotifyData      = &errmsg.ErrMsg{Code: -2001, Message: "支付通知数据错误", Detail: ""}
+	errPayNotifySignCheck = &errmsg.ErrMsg{Code: -2002, Message: "支付通知签名校验错误", Detail: ""}
+	errPayNotifyResult    = &errmsg.ErrMsg{Code: -2003, Message: "支付通知结果错误", Detail: ""}
+	errUnifiedOrderReq    = &errmsg.ErrMsg{Code: -2004, Message: "订单请求错误", Detail: ""}
+	errUnifiedOrderRsp    = &errmsg.ErrMsg{Code: -2005, Message: "订单请求返回错误", Detail: ""}
+	errUnifiedOrderResult = &errmsg.ErrMsg{Code: -2006, Message: "订单生成错误", Detail: ""}
+	errPayPackage         = &errmsg.ErrMsg{Code: -2007, Message: "支付包生成错误", Detail: ""}
 )

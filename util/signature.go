@@ -7,6 +7,7 @@ import (
 	"strings"
 )
 
+// SignMd5 add data signatrue by MD5
 func SignMd5(data, secretKey string) string {
 	data, err := url.QueryUnescape(data)
 	if err != nil {
@@ -21,6 +22,7 @@ func SignMd5(data, secretKey string) string {
 	return sign
 }
 
+// CheckSignMd5 check data signatrue by MD5
 func CheckSignMd5(data, secretKey, sign string) bool {
 	return SignMd5(data, secretKey) == sign
 }

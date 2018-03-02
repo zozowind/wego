@@ -7,27 +7,34 @@ import (
 	"github.com/zozowind/wego/util"
 )
 
-const WxApiUrl = "https://api.weixin.qq.com"
-const WxPayUrl = "https://api.mch.weixin.qq.com"
+const (
+	//WxAPIURL wechat api url
+	WxAPIURL = "https://api.weixin.qq.com"
+	//WxPayURL wechat api url
+	WxPayURL = "https://api.mch.weixin.qq.com"
+)
 
+//WxErrorResponse wechat common api response
 type WxErrorResponse struct {
 	Code    int    `json:"errcode"`
 	Message string `json:"errmsg"`
 }
 
-func (this *WeBase) GetResponseWithToken(urlTemp string, param interface{}) ([]byte, error) {
+//GetResponseWithToken wechat request with token
+func (wb *WeBase) GetResponseWithToken(urlTemp string, param interface{}) ([]byte, error) {
 	data := []byte{}
-	token, err := this.Token()
+	token, err := wb.Token()
 	if nil != err {
 		return data, err
 	}
 	url := fmt.Sprintf(urlTemp, token)
-	data, err = util.HttpJsonPost(this.HttpClient, url, param)
+	data, err = util.HTTPJsonPost(wb.HTTPClient, url, param)
 	return data, err
 }
 
-func (this *WeBase) PostWithToken(urlTemp string, param interface{}) ([]byte, error) {
-	data, err := this.GetResponseWithToken(urlTemp, param)
+//PostWithToken post with token
+func (wb *WeBase) PostWithToken(urlTemp string, param interface{}) ([]byte, error) {
+	data, err := wb.GetResponseWithToken(urlTemp, param)
 	if nil != err {
 		return data, err
 	}

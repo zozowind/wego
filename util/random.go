@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+// RandString 生成特定长度的随机字符串
 func RandString(length int) string {
 	rand.Seed(time.Now().Unix())
 	chars := "abcdefghijklmnopqrstuvwxyz0123456789"

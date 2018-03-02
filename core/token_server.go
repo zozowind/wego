@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+//CacheServer cache server interface
 type CacheServer interface {
 	Get() (string, error)            //获取token
 	Set(string, time.Duration) error //设置token
@@ -12,6 +13,7 @@ type CacheServer interface {
 	Unlock()                         //解锁
 }
 
+//CacheTokenServer token server use cache server
 type CacheTokenServer struct {
 	TokenFunc           func() (*AccessToken, error)
 	CacheServer         CacheServer
@@ -35,6 +37,7 @@ func retryToken(attempts int, sleep time.Duration, fn func() (string, error)) (s
 	return token, err
 }
 
+//NewCacheTokenServer get a new cache token server
 func NewCacheTokenServer(cacheServer CacheServer, tokenFunc func() (*AccessToken, error)) *CacheTokenServer {
 	srv := &CacheTokenServer{
 		TokenFunc:           tokenFunc,
@@ -46,21 +49,21 @@ func NewCacheTokenServer(cacheServer CacheServer, tokenFunc func() (*AccessToken
 	return srv
 }
 
-func (this *CacheTokenServer) tokenUpdateDaemon(initTickDuration time.Duration) {
+func (cts *CacheTokenServer) tokenUpdateDaemon(initTickDuration time.Duration) {
 	tickDuration := initTickDuration
 
 NEW_TICK_DURATION:
 	ticker := time.NewTicker(tickDuration)
 	for {
 		select {
-		case accessToken := <-this.RefreshTokenReqChan:
+		case accessToken := <-cts.RefreshTokenReqChan:
 			tickDuration = time.Duration(accessToken.ExpiresIn) * time.Second
 			ticker.Stop()
 			goto NEW_TICK_DURATION
 		case <-ticker.C:
-			err := this.CacheServer.Lock()
+			err := cts.CacheServer.Lock()
 			if nil == err {
-				accessToken, err := this.TokenFunc()
+				accessToken, err := cts.TokenFunc()
 				if nil == err {
 					newTickDuration := time.Duration(accessToken.ExpiresIn) * time.Second
 					if abs(tickDuration-newTickDuration) > time.Second*5 {
@@ -70,27 +73,29 @@ NEW_TICK_DURATION:
 					}
 				}
 			}
-			this.CacheServer.Unlock()
+			cts.CacheServer.Unlock()
 		}
 	}
 }
 
-func (this *CacheTokenServer) Token() (string, error) {
-	token, err := this.CacheServer.Get()
+//Token get token from CacheTokenServer
+func (cts *CacheTokenServer) Token() (string, error) {
+	token, err := cts.CacheServer.Get()
 	if nil != err || token == "" {
-		return this.RefreshToken()
+		return cts.RefreshToken()
 	}
 	return token, err
 }
 
-func (this *CacheTokenServer) RefreshToken() (string, error) {
-	err := this.CacheServer.Lock()
+//RefreshToken refresh token from CacheTokenServer
+func (cts *CacheTokenServer) RefreshToken() (string, error) {
+	err := cts.CacheServer.Lock()
 	if nil != err {
 		//retry
-		this.CacheServer.Unlock()
-		return retryToken(3, 300*time.Millisecond, this.CacheServer.Get)
+		cts.CacheServer.Unlock()
+		return retryToken(3, 300*time.Millisecond, cts.CacheServer.Get)
 	}
-	accessToken, err := this.TokenFunc()
+	accessToken, err := cts.TokenFunc()
 	if nil != err {
 		return "", err
 	}

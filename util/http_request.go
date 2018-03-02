@@ -12,28 +12,27 @@ import (
 	"time"
 )
 
-var DefaultHttpClient *http.Client
-var DefaultMediaHttpClient *http.Client
+// DefaultHTTPClient default http client
+var DefaultHTTPClient *http.Client
+
+// DefaultMediaHTTPClient default http client for request media
+var DefaultMediaHTTPClient *http.Client
 
 func init() {
 	shortTimeClient := *http.DefaultClient
 	shortTimeClient.Timeout = time.Second * 5
-	DefaultHttpClient = &shortTimeClient
+	DefaultHTTPClient = &shortTimeClient
 
 	longTimeclient := *http.DefaultClient
 	longTimeclient.Timeout = time.Second * 60
-	DefaultMediaHttpClient = &longTimeclient
+	DefaultMediaHTTPClient = &longTimeclient
 }
 
-type WeBaseResponse struct {
-	Code    int    `json:"errcode"`
-	Message string `json:"errmsg"`
-}
-
-func HttpJsonPost(httpClient *http.Client, url string, param interface{}) ([]byte, error) {
+// HTTPJsonPost http post request with json in body
+func HTTPJsonPost(httpClient *http.Client, url string, param interface{}) ([]byte, error) {
 	data := []byte{}
 	if httpClient == nil {
-		httpClient = DefaultHttpClient
+		httpClient = DefaultHTTPClient
 	}
 
 	//请求参数
@@ -57,10 +56,11 @@ func HttpJsonPost(httpClient *http.Client, url string, param interface{}) ([]byt
 	return data, err
 }
 
-func HttpGet(httpClient *http.Client, url string) ([]byte, error) {
+// HTTPGet http get request
+func HTTPGet(httpClient *http.Client, url string) ([]byte, error) {
 	data := []byte{}
 	if httpClient == nil {
-		httpClient = DefaultHttpClient
+		httpClient = DefaultHTTPClient
 	}
 
 	//请求
@@ -79,10 +79,11 @@ func HttpGet(httpClient *http.Client, url string) ([]byte, error) {
 	return data, err
 }
 
-func HttpXMLPost(client *http.Client, url string, params url.Values) ([]byte, error) {
-	request := UrlValueToXml(params)
+// HTTPXMLPost http post request with XML in body
+func HTTPXMLPost(client *http.Client, url string, params url.Values) ([]byte, error) {
+	request := URLValueToXML(params)
 	response := []byte{}
-	var reader io.Reader = nil
+	var reader io.Reader
 	if params != nil {
 		reader = strings.NewReader(request)
 	}

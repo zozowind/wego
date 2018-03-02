@@ -9,20 +9,22 @@ import (
 )
 
 const (
-	GetSessionUriTemp = "/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code"
+	getSessionURITemp = "/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code"
 )
 
+//WxGetSessionResponse wechat session response struct
 type WxGetSessionResponse struct {
-	OpenId     string `json:"openid"`
+	OpenID     string `json:"openid"`
 	SessionKey string `json:"session_key"`
-	UnionId    string `json:"unionid"`
+	UnionID    string `json:"unionid"`
 }
 
-func (this *WeAppClient) GetSession(code string) (*WxGetSessionResponse, error) {
+//GetSession get wechat user session by code
+func (client *WeAppClient) GetSession(code string) (*WxGetSessionResponse, error) {
 	res := &WxGetSessionResponse{}
 
-	url := fmt.Sprintf(core.WxApiUrl+GetSessionUriTemp, this.Base.AppId, this.Base.AppSecret, code)
-	data, err := util.HttpGet(this.Base.HttpClient, url)
+	url := fmt.Sprintf(core.WxAPIURL+getSessionURITemp, client.Base.AppID, client.Base.AppSecret, code)
+	data, err := util.HTTPGet(client.Base.HTTPClient, url)
 	if err != nil {
 		return res, err
 	}

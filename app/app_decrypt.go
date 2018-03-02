@@ -2,13 +2,15 @@ package app
 
 import "encoding/json"
 
+// Watermark Watermark struct
 type Watermark struct {
 	Timestamp int    `json:"timestamp"`
-	AppId     string `json:"appid"`
+	AppID     string `json:"appid"`
 }
 
+//UserDecryptInfo decypt wechat user info struct
 type UserDecryptInfo struct {
-	OpenId    string    `json:"openId"`
+	OpenID    string    `json:"openId"`
 	Nickname  string    `json:"nickName"`
 	Gender    int       `json:"gender"`
 	Province  string    `json:"province"`
@@ -16,35 +18,38 @@ type UserDecryptInfo struct {
 	Country   string    `json:"country"`
 	Avatar    string    `json:"avatarUrl"`
 	Language  string    `json:"language"`
-	UnionId   string    `json:"unionId"`
+	UnionID   string    `json:"unionId"`
 	Watermark Watermark `json:"watermark"`
 }
 
+//GroupDecryptInfo decypt wechat group info struct
 type GroupDecryptInfo struct {
 	OpenGId string `json:"openGId"`
 }
 
-func (this *WeAppClient) DecryptUserInfo(encryptedData string, iv string, sessionKey string) (*UserDecryptInfo, error) {
+//DecryptUserInfo decypt wechat user info
+func (client *WeAppClient) DecryptUserInfo(encryptedData string, iv string, sessionKey string) (*UserDecryptInfo, error) {
 	info := &UserDecryptInfo{}
-	data, err := this.Decrypt(encryptedData, iv, sessionKey)
+	data, err := client.decrypt(encryptedData, iv, sessionKey)
 	if nil == err {
 		err = json.Unmarshal([]byte(data), info)
 	}
 	return info, err
 }
 
-func (this *WeAppClient) DecryptGroupInfo(encryptedData string, iv string, sessionKey string) (*GroupDecryptInfo, error) {
+//DecryptGroupInfo decypt wechat group info
+func (client *WeAppClient) DecryptGroupInfo(encryptedData string, iv string, sessionKey string) (*GroupDecryptInfo, error) {
 	info := &GroupDecryptInfo{}
-	data, err := this.Decrypt(encryptedData, iv, sessionKey)
+	data, err := client.decrypt(encryptedData, iv, sessionKey)
 	if nil == err {
 		err = json.Unmarshal([]byte(data), info)
 	}
 	return info, err
 }
 
-func (this *WeAppClient) Decrypt(encryptedData string, iv string, sessionKey string) (string, error) {
+func (client *WeAppClient) decrypt(encryptedData string, iv string, sessionKey string) (string, error) {
 	pc := WxBizDataCrypt{
-		AppID:      this.Base.AppId,
+		AppID:      client.Base.AppID,
 		SessionKey: sessionKey,
 	}
 	//返回json string格式

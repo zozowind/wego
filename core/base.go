@@ -4,18 +4,27 @@ import (
 	"net/http"
 )
 
-const WeMedia = "MEDIA" //公众号
-const WeApp = "APP"     //小程序
-const WeGame = "GAME"   //小游戏
+const (
+	// WeMedia 公众号
+	WeMedia = "MEDIA"
+	// WeApp 小程序
+	WeApp = "APP"
+	// WeGame 小游戏
+	WeGame = "GAME"
+	// WeEpApp 企业微信内应用
+	WeEpApp = "EPAPP"
+)
 
+// WeClient wechat client interface
 type WeClient interface {
 }
 
+//WeBase wechat client base struct
 type WeBase struct {
-	AppId       string
+	AppID       string
 	AppSecret   string
-	PayId       string //支付账号，一般为商户账号
+	PayID       string //支付账号，一般为商户账号
 	PayKey      string //支付key
 	TokenServer TokenServer
-	HttpClient  *http.Client
+	HTTPClient  *http.Client
 }

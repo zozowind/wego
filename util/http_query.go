@@ -7,17 +7,19 @@ import (
 	"regexp"
 )
 
-func UrlValueToXml(params url.Values) string {
-	resultXml := "<xml>"
+// URLValueToXML trans url.Values to xml string
+func URLValueToXML(params url.Values) string {
+	resultXML := "<xml>"
 	for key, values := range params {
 		value := values[0]
-		resultXml += "<" + key + "><![CDATA[" + value + "]]></" + key + ">"
+		resultXML += "<" + key + "><![CDATA[" + value + "]]></" + key + ">"
 	}
-	resultXml += "</xml>"
-	return resultXml
+	resultXML += "</xml>"
+	return resultXML
 }
 
-func StructToUrlValue(obj interface{}, t string) (url.Values, error) {
+// StructToURLValue trans struct to url.Values
+func StructToURLValue(obj interface{}, t string) (url.Values, error) {
 	objT := reflect.TypeOf(obj)
 	objV := reflect.ValueOf(obj)
 	if !(objT.Kind() == reflect.Ptr && objT.Elem().Kind() == reflect.Struct) {
