@@ -29,7 +29,7 @@ type TemplateData struct {
 
 //SendTemplateMessage send template message
 func (client *WeAppClient) SendTemplateMessage(param *TemplateParam) (*core.WxErrorResponse, error) {
-	data, err := client.Base.PostWithToken(templateURL, param)
+	data, err := client.PostWithToken(templateURL, param)
 	if nil != err {
 		return nil, err
 	}

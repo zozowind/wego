@@ -89,7 +89,7 @@ func (client *WeAppClient) GetPayNotifyRequest(w http.ResponseWriter, r *http.Re
 		if nil != err {
 			return request, errmsg.GetError(errPayNotifyData, err.Error())
 		}
-		ok := util.CheckSignMd5(payNotifyData.Encode(), client.Base.PayKey, sign)
+		ok := util.CheckSignMd5(payNotifyData.Encode(), client.PayKey, sign)
 		if !ok {
 			err = errmsg.GetError(errPayNotifySignCheck, fmt.Sprintf("response: %#v, signStr: %s", request, payNotifyData))
 		}
@@ -155,8 +155,8 @@ type PayPackage struct {
 
 //GeneratePayPackage get paypackage
 func (client *WeAppClient) GeneratePayPackage(request *UnifiedOrderRequest) (*PayPackage, error) {
-	request.AppID = client.Base.AppID
-	request.MchID = client.Base.PayID
+	request.AppID = client.AppID
+	request.MchID = client.PayID
 	request.NonceStr = util.RandString(32)
 	request.TradeType = "JSAPI"
 	request.SignType = "MD5" //暂时只支持MD5
@@ -164,8 +164,8 @@ func (client *WeAppClient) GeneratePayPackage(request *UnifiedOrderRequest) (*Pa
 	if nil != err {
 		return nil, errmsg.GetError(errUnifiedOrderReq, err.Error())
 	}
-	params.Add("sign", util.SignMd5(params.Encode(), client.Base.PayKey))
-	data, err := util.HTTPXMLPost(client.Base.HTTPClient, unifiedOrderURL, params)
+	params.Add("sign", util.SignMd5(params.Encode(), client.PayKey))
+	data, err := util.HTTPXMLPost(client.HTTPClient, unifiedOrderURL, params)
 	if nil != err {
 		return nil, errmsg.GetError(errUnifiedOrderRsp, err.Error())
 	}
@@ -197,14 +197,14 @@ func (client *WeAppClient) GeneratePayPackage(request *UnifiedOrderRequest) (*Pa
 	if nil != err {
 		return nil, errmsg.GetError(errUnifiedOrderResult, err.Error())
 	}
-	ok := util.CheckSignMd5(resData.Encode(), client.Base.PayKey, sign)
+	ok := util.CheckSignMd5(resData.Encode(), client.PayKey, sign)
 	if !ok {
 		return nil, errmsg.GetError(errUnifiedOrderResult, fmt.Sprintf("sign invalid, response: %#v, signStr: %s", response, resData))
 	}
 
 	//组织支付包
 	payPackage := &PayPackage{
-		AppID:     client.Base.AppID,
+		AppID:     client.AppID,
 		NonceStr:  util.RandString(32),
 		Package:   fmt.Sprintf("prepay_id=%s", response.PrepareID),
 		SignType:  "MD5",
@@ -214,6 +214,6 @@ func (client *WeAppClient) GeneratePayPackage(request *UnifiedOrderRequest) (*Pa
 	if nil != err {
 		return payPackage, errmsg.GetError(errPayPackage, err.Error())
 	}
-	payPackage.PaySign = util.SignMd5(params.Encode(), client.Base.PayKey)
+	payPackage.PaySign = util.SignMd5(params.Encode(), client.PayKey)
 	return payPackage, nil
 }

@@ -11,8 +11,8 @@ const (
 	WeApp = "APP"
 	// WeGame 小游戏
 	WeGame = "GAME"
-	// WeEpApp 企业微信内应用
-	WeEpApp = "EPAPP"
+	// WeWork 企业微信内应用
+	WeWork = "WORK"
 )
 
 // WeClient wechat client interface

@@ -23,8 +23,8 @@ type WxGetSessionResponse struct {
 func (client *WeAppClient) GetSession(code string) (*WxGetSessionResponse, error) {
 	res := &WxGetSessionResponse{}
 
-	url := fmt.Sprintf(core.WxAPIURL+getSessionURITemp, client.Base.AppID, client.Base.AppSecret, code)
-	data, err := util.HTTPGet(client.Base.HTTPClient, url)
+	url := fmt.Sprintf(core.WxAPIURL+getSessionURITemp, client.AppID, client.AppSecret, code)
+	data, err := util.HTTPGet(client.HTTPClient, url)
 	if err != nil {
 		return res, err
 	}

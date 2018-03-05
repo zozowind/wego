@@ -49,7 +49,7 @@ func (client *WeAppClient) DecryptGroupInfo(encryptedData string, iv string, ses
 
 func (client *WeAppClient) decrypt(encryptedData string, iv string, sessionKey string) (string, error) {
 	pc := WxBizDataCrypt{
-		AppID:      client.Base.AppID,
+		AppID:      client.AppID,
 		SessionKey: sessionKey,
 	}
 	//返回json string格式
