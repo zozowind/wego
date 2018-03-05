@@ -1,6 +1,7 @@
 package core
 
 import (
+	"fmt"
 	"math/rand"
 	"time"
 )
@@ -11,6 +12,41 @@ type CacheServer interface {
 	Set(string, time.Duration) error //设置token
 	Lock() error                     //锁
 	Unlock()                         //解锁
+}
+
+// DefaultMemoryCacheServer cache server using memory
+type DefaultMemoryCacheServer struct {
+	token     string
+	expiresAt time.Time
+}
+
+// Get  set token
+func (s *DefaultMemoryCacheServer) Get() (string, error) {
+	token := s.token
+
+	if s.expiresAt.Before(time.Now()) {
+		return token, fmt.Errorf("token expires")
+	}
+	if token == "" {
+		return token, fmt.Errorf("empty token")
+	}
+	return token, nil
+}
+
+// Set  get token
+func (s *DefaultMemoryCacheServer) Set(token string, expires time.Duration) error {
+	s.token = token
+	s.expiresAt = time.Now().Add(expires)
+	return nil
+}
+
+//Lock just implement the interface
+func (s *DefaultMemoryCacheServer) Lock() error {
+	return nil
+}
+
+//Unlock just implement the interface
+func (s *DefaultMemoryCacheServer) Unlock() {
 }
 
 //CacheTokenServer token server use cache server
