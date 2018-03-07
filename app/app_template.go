@@ -33,7 +33,8 @@ func (client *WeAppClient) SendTemplateMessage(param *TemplateParam) (*core.WxEr
 	if nil != err {
 		return nil, err
 	}
-	errRes := &core.WxErrorResponse{}
-	err = json.Unmarshal(data, errRes)
-	return errRes, err
+	res := &core.WxErrorResponse{}
+	err = json.Unmarshal(data, res)
+	err = res.Check()
+	return res, err
 }

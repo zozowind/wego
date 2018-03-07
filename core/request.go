@@ -20,6 +20,14 @@ type WxErrorResponse struct {
 	Message string `json:"errmsg"`
 }
 
+//Check check wx response if has error
+func (res *WxErrorResponse) Check() error {
+	if res.Code != 0 {
+		return fmt.Errorf("code: %d, message: %s", res.Code, res.Message)
+	}
+	return nil
+}
+
 //GetResponseWithToken wechat request with token
 func (wb *WeBase) GetResponseWithToken(urlTemp string, param interface{}) ([]byte, error) {
 	data := []byte{}

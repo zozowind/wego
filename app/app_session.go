@@ -30,13 +30,13 @@ func (client *WeAppClient) GetSession(code string) (*WxGetSessionResponse, error
 		return res, err
 	}
 
-	errRes := &core.WxErrorResponse{}
-	err = json.Unmarshal(data, errRes)
+	err = json.Unmarshal(data, res)
 	if nil != err {
 		return res, err
-	} else if 0 != errRes.Code {
-		return res, fmt.Errorf("code: %d, message: %s", errRes.Code, errRes.Message)
 	}
-	err = json.Unmarshal(data, res)
+	err = res.Check()
+	if nil != err {
+		return res, err
+	}
 	return res, err
 }
