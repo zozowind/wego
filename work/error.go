@@ -5,5 +5,6 @@ import (
 )
 
 var (
-	errSendMessage = &errmsg.ErrMsg{Code: -4001, Message: "发送消息错误", Detail: ""}
+	errSendMessage = &errmsg.ErrMsg{Code: -4001, Message: "发送消息错误"}
+	errUploadMedia = &errmsg.ErrMsg{Code: -4002, Message: "素材文件上传错误"}
 )

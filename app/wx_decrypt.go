@@ -11,10 +11,10 @@ import (
 )
 
 var (
-	illegalAesKey   = &errmsg.ErrMsg{Code: -41001, Message: "sessionKey length is error", Detail: ""}
-	illegalIv       = &errmsg.ErrMsg{Code: -41002, Message: "iv length is error", Detail: ""}
-	illegalBuffer   = &errmsg.ErrMsg{Code: -41003, Message: "illegalBuffer", Detail: ""}
-	errDecodeBase64 = &errmsg.ErrMsg{Code: -41004, Message: "errDecodeBase64", Detail: ""}
+	illegalAesKey   = &errmsg.ErrMsg{Code: -41001, Message: "sessionKey length is error"}
+	illegalIv       = &errmsg.ErrMsg{Code: -41002, Message: "iv length is error"}
+	illegalBuffer   = &errmsg.ErrMsg{Code: -41003, Message: "illegalBuffer"}
+	errDecodeBase64 = &errmsg.ErrMsg{Code: -41004, Message: "errDecodeBase64"}
 )
 
 // WxBizDataCrypt represents an active WxBizDataCrypt object

@@ -68,17 +68,15 @@ type PayNotifyResponse struct {
 
 //GetPayNotifyRequest get PayNotifyRequest
 func (client *WeAppClient) GetPayNotifyRequest(w http.ResponseWriter, r *http.Request) (*PayNotifyRequest, error) {
-	var err *errmsg.ErrMsg
-
 	request := &PayNotifyRequest{}
-	body, e := ioutil.ReadAll(r.Body)
-	if e != nil {
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
 		return request, errmsg.GetError(errPayNotifyData, err.Error())
 	}
 
 	r.Body = ioutil.NopCloser(bytes.NewBuffer(body))
-	e = xml.Unmarshal(body, request)
-	if e != nil {
+	err = xml.Unmarshal(body, request)
+	if err != nil {
 		return request, errmsg.GetError(errPayNotifyData, err.Error())
 	}
 

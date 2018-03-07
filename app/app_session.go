@@ -14,6 +14,7 @@ const (
 
 //WxGetSessionResponse wechat session response struct
 type WxGetSessionResponse struct {
+	core.WxErrorResponse
 	OpenID     string `json:"openid"`
 	SessionKey string `json:"session_key"`
 	UnionID    string `json:"unionid"`

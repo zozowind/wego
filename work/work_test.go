@@ -20,7 +20,24 @@ func init() {
 	wework.TokenServer = core.NewCacheTokenServer(cacheServer, wework.RequestToken)
 }
 
-func Test_SendMessage(t *testing.T) {
+func Test_All(t *testing.T) {
+	//SendMessageTest(t)
+	UploadMediaTest(t)
+}
+
+func UploadMediaTest(t *testing.T) {
+	Convey("上传文件", t, func() {
+		fmt.Printf("%s", getCurrentDirectory())
+		res, err := wework.UploadLocalMedia(MediaTypeFile, "error.txt")
+		if nil != err {
+			t.Errorf("%#v %#v", res, err)
+		} else {
+			fmt.Printf("%#v", res)
+		}
+	})
+}
+
+func SendMessageTest(t *testing.T) {
 	Convey("发送文本消息", t, func() {
 		message := &TextMessage{
 			Text: InMessageContent{

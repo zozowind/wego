@@ -81,14 +81,17 @@ func HTTPGet(httpClient *http.Client, url string) ([]byte, error) {
 }
 
 // HTTPXMLPost http post request with XML in body
-func HTTPXMLPost(client *http.Client, url string, params url.Values) ([]byte, error) {
+func HTTPXMLPost(httpClient *http.Client, url string, params url.Values) ([]byte, error) {
+	if httpClient == nil {
+		httpClient = DefaultHTTPClient
+	}
 	request := URLValueToXML(params)
 	response := []byte{}
 	var reader io.Reader
 	if params != nil {
 		reader = strings.NewReader(request)
 	}
-	resp, err := client.Post(url, "text/xml", reader)
+	resp, err := httpClient.Post(url, "text/xml", reader)
 	if err != nil {
 		return response, err
 	}
@@ -101,6 +104,7 @@ func HTTPXMLPost(client *http.Client, url string, params url.Values) ([]byte, er
 	return response, nil
 }
 
+//RequestFile upload media file strcut
 type RequestFile struct {
 	Name string
 	Data *bytes.Buffer
@@ -111,12 +115,16 @@ func (f *RequestFile) Read(p []byte) (n int, err error) {
 }
 
 //HTTPFormPost http request using form post
-func HTTPFormPost(client *http.Client, url string, params url.Values, files map[string][]*RequestFile) ([]byte, error) {
+func HTTPFormPost(httpClient *http.Client, url string, params url.Values, files map[string][]*RequestFile) ([]byte, error) {
+	if httpClient == nil {
+		httpClient = DefaultHTTPClient
+	}
 	//create an empty form
 	bodyBuf := &bytes.Buffer{}
 	bodyWriter := multipart.NewWriter(bodyBuf)
 
 	//add string params
+
 	for key, s := range params {
 		for _, v := range s {
 			_ = bodyWriter.WriteField(key, v)
@@ -147,7 +155,7 @@ func HTTPFormPost(client *http.Client, url string, params url.Values, files map[
 
 	response := []byte{}
 	// post to server
-	resp, err := client.Post(url, contentType, bodyBuf)
+	resp, err := httpClient.Post(url, contentType, bodyBuf)
 	if err != nil {
 		return response, err
 	}
