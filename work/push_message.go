@@ -118,43 +118,43 @@ type ImageMessage struct {
 }
 
 func (m *ImageMessage) setMessageType() {
-	m.MsgType = "image"
+	m.MsgType = MediaTypeImage
 }
 
 // VoiceMessage push voice message struct
 type VoiceMessage struct {
 	BaseMessage
-	Voice InMessageMedia `json:"image"`
+	Voice InMessageMedia `json:"voice"`
 }
 
 func (m *VoiceMessage) setMessageType() {
-	m.MsgType = "voice"
+	m.MsgType = MediaTypeVoice
 }
 
 // VideoMessage push video message struct
 type VideoMessage struct {
 	BaseMessage
-	Video InMessageVideo `json:"image"`
+	Video InMessageVideo `json:"video"`
 }
 
 func (m *VideoMessage) setMessageType() {
-	m.MsgType = "video"
+	m.MsgType = MediaTypeVideo
 }
 
 // FileMessage push file message struct
 type FileMessage struct {
 	BaseMessage
-	File InMessageMedia `json:"image"`
+	File InMessageMedia `json:"file"`
 }
 
 func (m *FileMessage) setMessageType() {
-	m.MsgType = "file"
+	m.MsgType = MediaTypeFile
 }
 
 // CardMessage push textcard message struct
 type CardMessage struct {
 	BaseMessage
-	TextCard InMessageCard `json:"image"`
+	TextCard InMessageCard `json:"textcard"`
 }
 
 func (m *CardMessage) setMessageType() {

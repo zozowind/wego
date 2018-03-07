@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"mime/multipart"
 	"net/http"
 	"net/url"
 	"strings"
@@ -88,6 +89,65 @@ func HTTPXMLPost(client *http.Client, url string, params url.Values) ([]byte, er
 		reader = strings.NewReader(request)
 	}
 	resp, err := client.Post(url, "text/xml", reader)
+	if err != nil {
+		return response, err
+	}
+
+	response, err = ioutil.ReadAll(resp.Body)
+	defer resp.Body.Close()
+	if err != nil {
+		return response, err
+	}
+	return response, nil
+}
+
+type RequestFile struct {
+	Name string
+	Data *bytes.Buffer
+}
+
+func (f *RequestFile) Read(p []byte) (n int, err error) {
+	return f.Data.Read(p)
+}
+
+//HTTPFormPost http request using form post
+func HTTPFormPost(client *http.Client, url string, params url.Values, files map[string][]*RequestFile) ([]byte, error) {
+	//create an empty form
+	bodyBuf := &bytes.Buffer{}
+	bodyWriter := multipart.NewWriter(bodyBuf)
+
+	//add string params
+	for key, s := range params {
+		for _, v := range s {
+			_ = bodyWriter.WriteField(key, v)
+		}
+	}
+
+	//add file to upload
+	for key, fs := range files {
+		for _, f := range fs {
+			//create file field
+			fileWriter, err := bodyWriter.CreateFormFile(key, f.Name)
+			if nil != err {
+				return nil, err
+			}
+			//copy filedata to form
+			_, err = io.Copy(fileWriter, f)
+			if err != nil {
+				return nil, err
+			}
+		}
+	}
+
+	// get upload content-type like multipart/form-data; boundary=...
+	contentType := bodyWriter.FormDataContentType()
+
+	// close bodyWriter now, not in deferr, it will add close tag to body
+	bodyWriter.Close()
+
+	response := []byte{}
+	// post to server
+	resp, err := client.Post(url, contentType, bodyBuf)
 	if err != nil {
 		return response, err
 	}
