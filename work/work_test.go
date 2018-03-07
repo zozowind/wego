@@ -6,7 +6,6 @@ import (
 
 	. "github.com/smartystreets/goconvey/convey"
 	"github.com/zozowind/wego/core"
-	"github.com/zozowind/wego/libs/errmsg"
 )
 
 var wework *WeWorkClient
@@ -27,10 +26,9 @@ func Test_All(t *testing.T) {
 
 func UploadMediaTest(t *testing.T) {
 	Convey("上传文件", t, func() {
-		fmt.Printf("%s", getCurrentDirectory())
-		res, err := wework.UploadLocalMedia(MediaTypeFile, "error.txt")
+		res, err := wework.UploadLocalMedia(MediaTypeFile+"1", "error.txt")
 		if nil != err {
-			t.Errorf("%#v %#v", res, err)
+			t.Errorf("%s", err.Error())
 		} else {
 			fmt.Printf("%#v", res)
 		}
@@ -46,7 +44,7 @@ func SendMessageTest(t *testing.T) {
 		}
 		res, err := wework.SendMessage(MessageTargetAll, []string{}, 0, message)
 		if nil != err {
-			t.Errorf("%s", err.(*errmsg.ErrMsg).Detail)
+			t.Errorf("%s", err.Error())
 		} else {
 			fmt.Printf("%#v", res)
 		}

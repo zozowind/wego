@@ -93,6 +93,10 @@ func (w *WeWorkClient) uploadMedia(t string, f *util.RequestFile) (*WxWorkUpload
 	if nil != err {
 		return nil, err
 	}
+
+	if res.Code != 0 {
+		return nil, fmt.Errorf("code: %d, message: %s", res.Code, res.Message)
+	}
 	return res, nil
 }
 
