@@ -161,6 +161,42 @@ func (m *CardMessage) setMessageType() {
 	m.MsgType = "textcard"
 }
 
+//InMessageArticle article info
+type InMessageArticle struct {
+	InMessageCard
+	PicURL string `json:"picurl"`
+}
+
+//InMessageMpArticle  info of article which storing in wework
+type InMessageMpArticle struct {
+	Title            string `json:"title"`
+	ThumbMediaID     string `json:"thumb_media_id"`
+	Author           string `json:"author"`
+	ContentSourceURL string `json:"content_source_url"`
+	Content          string `json:"content"`
+	Digest           string `json:"digest"`
+}
+
+// NewsMessage mutiple article message, include 1-8 articles
+type NewsMessage struct {
+	BaseMessage
+	Articles []InMessageArticle
+}
+
+func (m *NewsMessage) setMessageType() {
+	m.MsgType = "news"
+}
+
+//MpNewsMessage mutiple article message, include 1-8 articles which store in we work
+type MpNewsMessage struct {
+	BaseMessage
+	Articles []InMessageMpArticle
+}
+
+func (m *MpNewsMessage) setMessageType() {
+	m.MsgType = "mpnews"
+}
+
 func (w *WeWorkClient) completeMessage(toType string, ids []string, safe int, message PushMessage) (PushMessage, error) {
 	//设置消息类型
 	switch toType {
