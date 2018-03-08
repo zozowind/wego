@@ -26,7 +26,7 @@ func Test_All(t *testing.T) {
 
 func UploadMediaTest(t *testing.T) {
 	Convey("上传文件", t, func() {
-		res, err := wework.UploadLocalMedia(MediaTypeFile+"1", "error.txt")
+		res, err := wework.UploadLocalMedia(MediaTypeFile, "error.txt")
 		if nil != err {
 			t.Errorf("%s", err.Error())
 		} else {

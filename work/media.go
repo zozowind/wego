@@ -42,7 +42,6 @@ type WxWorkUploadMediaResponse struct {
 
 // UploadLocalMedia upload media from local path
 func (w *WeWorkClient) UploadLocalMedia(t string, filePath string) (*WxWorkUploadMediaResponse, error) {
-	filePath = "error.go"
 	file, err := os.Open(filePath)
 	if nil != err {
 		return nil, errmsg.GetError(errUploadMedia, err.Error())

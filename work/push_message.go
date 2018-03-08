@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/zozowind/wego/core"
 	"github.com/zozowind/wego/libs/errmsg"
 )
 
@@ -42,8 +43,7 @@ type BaseMessage struct {
 
 //WeWorkMessageResponse wework push message response struct
 type WeWorkMessageResponse struct {
-	Code         int    `json:"errcode"`
-	Message      string `json:"errmsg"`
+	core.WxErrorResponse
 	InvalidUser  string `json:"invaliduser"` // 不区分大小写，返回的列表都统一转为小写
 	InvalidParty string `json:"invalidparty"`
 	InvalidTag   string `json:"invalidtag"`
@@ -235,5 +235,9 @@ func (w *WeWorkClient) SendMessage(toType string, ids []string, safe int, messag
 		return res, errmsg.GetError(errSendMessage, err.Error())
 	}
 
+	err = res.Check()
+	if nil != err {
+		return res, errmsg.GetError(errDownloadMedia, err.Error())
+	}
 	return res, nil
 }
