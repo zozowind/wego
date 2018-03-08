@@ -106,7 +106,7 @@ func (w *WeWorkClient) uploadMedia(t string, f *util.RequestFile) (*WxWorkUpload
 	return res, nil
 }
 
-func (w *WeWorkClient) downloadMedia(url string, mediaID string) {
+func (w *WeWorkClient) downloadMedia(url string, mediaID string) ([]byte, error) {
 	m := &mediaRequestParam{
 		MediaID: mediaID,
 	}
