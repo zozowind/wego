@@ -62,5 +62,5 @@ func (qr *QrcodeC) URL() string {
 
 //GetQrcode get wechat app qrcode
 func (client *WeAppClient) GetQrcode(qrcode Qrcode) ([]byte, error) {
-	return client.GetResponseWithToken(qrcode.URL(), qrcode)
+	return client.PostResponseWithToken(qrcode.URL(), qrcode)
 }

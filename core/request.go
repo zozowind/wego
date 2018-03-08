@@ -3,6 +3,8 @@ package core
 import (
 	"encoding/json"
 	"fmt"
+	"net/url"
+	"strings"
 
 	"github.com/zozowind/wego/util"
 )
@@ -28,8 +30,8 @@ func (res *WxErrorResponse) Check() error {
 	return nil
 }
 
-//GetResponseWithToken wechat request with token
-func (wb *WeBase) GetResponseWithToken(urlTemp string, param interface{}) ([]byte, error) {
+//PostResponseWithToken wechat request with token
+func (wb *WeBase) PostResponseWithToken(urlTemp string, param interface{}) ([]byte, error) {
 	data := []byte{}
 	token, err := wb.Token()
 	if nil != err {
@@ -40,9 +42,26 @@ func (wb *WeBase) GetResponseWithToken(urlTemp string, param interface{}) ([]byt
 	return data, err
 }
 
+//GetResponseWithToken wechat request with token
+func (wb *WeBase) GetResponseWithToken(urlTemp string, params url.Values) ([]byte, error) {
+	data := []byte{}
+	token, err := wb.Token()
+	if nil != err {
+		return data, err
+	}
+	url := fmt.Sprintf(urlTemp, token)
+	sep := "?"
+	if strings.Contains(url, sep) {
+		sep = "&"
+	}
+	url += sep + params.Encode()
+	data, err = util.HTTPGet(wb.HTTPClient, url)
+	return data, err
+}
+
 //PostWithToken post with token
 func (wb *WeBase) PostWithToken(urlTemp string, param interface{}) ([]byte, error) {
-	data, err := wb.GetResponseWithToken(urlTemp, param)
+	data, err := wb.PostResponseWithToken(urlTemp, param)
 	if nil != err {
 		return data, err
 	}

@@ -15,7 +15,8 @@ import (
 )
 
 const (
-	mediaUploadURL = WxWorkAPIURL + "/cgi-bin/media/upload?access_token=%s&type=%s"
+	mediaUploadURL   = WxWorkAPIURL + "/cgi-bin/media/upload?access_token=%s&type=%s"
+	mediaDownloadURL = WxWorkAPIURL + "/cgi-bin/media/get?access_token=%s"
 	//MediaTypeImage image
 	MediaTypeImage = "image"
 	//MediaTypeVoice voice
@@ -25,6 +26,10 @@ const (
 	//MediaTypeFile file
 	MediaTypeFile = "file"
 )
+
+type mediaRequestParam struct {
+	MediaID string `query:"media_id"`
+}
 
 //WxWorkUploadMediaResponse wx work upload media response
 type WxWorkUploadMediaResponse struct {
@@ -100,6 +105,28 @@ func (w *WeWorkClient) uploadMedia(t string, f *util.RequestFile) (*WxWorkUpload
 	return res, nil
 }
 
-func (w *WeWorkClient) GetMedia() {
-
+// DownloadMedia get media form weixin
+func (w *WeWorkClient) DownloadMedia(mediaID string) ([]byte, error) {
+	m := &mediaRequestParam{
+		MediaID: mediaID,
+	}
+	data := []byte{}
+	params, err := util.StructToURLValue(m, "query")
+	if nil != err {
+		return data, errmsg.GetError(errDownloadMedia, err.Error())
+	}
+	data, err = w.GetResponseWithToken(mediaDownloadURL, params)
+	if nil != err {
+		return data, errmsg.GetError(errDownloadMedia, err.Error())
+	}
+	res := &core.WxErrorResponse{}
+	err = json.Unmarshal(data, res)
+	if nil == err {
+		err = res.Check()
+		if nil != err {
+			return nil, errmsg.GetError(errDownloadMedia, err.Error())
+		}
+		return nil, errmsg.GetError(errDownloadMedia, "wx err return error")
+	}
+	return data, nil
 }
