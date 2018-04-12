@@ -12,4 +12,6 @@ var (
 	errUnifiedOrderRsp    = &errmsg.ErrMsg{Code: -2005, Message: "订单请求返回错误"}
 	errUnifiedOrderResult = &errmsg.ErrMsg{Code: -2006, Message: "订单生成错误"}
 	errPayPackage         = &errmsg.ErrMsg{Code: -2007, Message: "支付包生成错误"}
+	errMessageSignCheck   = &errmsg.ErrMsg{Code: -2008, Message: "消息签名校验错误"}
+	errMessageMethod      = &errmsg.ErrMsg{Code: -2009, Message: "消息请求方法错误"}
 )

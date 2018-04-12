@@ -2,8 +2,10 @@ package util
 
 import (
 	"crypto/md5"
+	"crypto/sha1"
 	"encoding/hex"
 	"net/url"
+	"sort"
 	"strings"
 )
 
@@ -25,4 +27,12 @@ func SignMd5(data, secretKey string) string {
 // CheckSignMd5 check data signatrue by MD5
 func CheckSignMd5(data, secretKey, sign string) bool {
 	return SignMd5(data, secretKey) == sign
+}
+
+//StrSortSha1Sign 字符串排序sha1签名
+func StrSortSha1Sign(strs []string) string {
+	sort.Strings(strs)
+	b := strings.Join(strs, "")
+	hashsum := sha1.Sum([]byte(b))
+	return hex.EncodeToString(hashsum[:])
 }
