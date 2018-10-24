@@ -1,10 +1,10 @@
 package media
 
 import (
-	"github.com/zozowind/wego/core"
-
 	"math/rand"
 	"time"
+
+	"github.com/zozowind/wego/core"
 )
 
 //CacheJsTicketServer token server use cache server
@@ -89,9 +89,13 @@ func (cts *CacheJsTicketServer) RefreshTicket() (string, error) {
 		cts.CacheServer.Unlock()
 		return retryTicket(3, 300*time.Millisecond, cts.CacheServer.Get)
 	}
-	JsAPITicket, err := cts.TicketFunc()
+	jsAPITicket, err := cts.TicketFunc()
 	if nil != err {
 		return "", err
 	}
-	return JsAPITicket.Ticket, nil
+	err = cts.CacheServer.Set(jsAPITicket.Ticket, time.Duration(jsAPITicket.ExpiresIn)*time.Second)
+	if nil != err {
+		return "", err
+	}
+	return jsAPITicket.Ticket, nil
 }

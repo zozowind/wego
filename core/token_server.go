@@ -132,6 +132,11 @@ func (cts *CacheTokenServer) RefreshToken() (string, error) {
 		return retryToken(3, 300*time.Millisecond, cts.CacheServer.Get)
 	}
 	accessToken, err := cts.TokenFunc()
+	//保存到缓存中
+	if nil != err {
+		return "", err
+	}
+	err = cts.CacheServer.Set(accessToken.Token, time.Duration(accessToken.ExpiresIn)*time.Second)
 	if nil != err {
 		return "", err
 	}
