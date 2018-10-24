@@ -18,7 +18,7 @@ func URLValueToXML(params url.Values) string {
 	return resultXML
 }
 
-// StructToURLValue trans struct to url.Values
+// StructToURLValue trans struct to url.Values
 func StructToURLValue(obj interface{}, t string) (url.Values, error) {
 	objT := reflect.TypeOf(obj)
 	objV := reflect.ValueOf(obj)
