@@ -19,6 +19,7 @@ const (
 
 // UserAccessTokenRsp authAccessToken返回数据
 type UserAccessTokenRsp struct {
+	core.WxErrorResponse
 	AccessToken  string `json:"access_token"`
 	ExpiresIn    int    `json:"expires_in"`
 	RefreshToken string `json:"refresh_token"`
@@ -42,7 +43,7 @@ func (wm *WeMediaClient) GetUserAccessToken(code string) (rsp *UserAccessTokenRs
 	params := url.Values{}
 	params.Set("appid", wm.AppID)
 	params.Set("secret", wm.AppSecret)
-	params.Set("code", "code")
+	params.Set("code", code)
 	params.Set("grant_type", grantTypeAuth)
 	data, err := util.HTTPGet(nil, accessTokenURL+"?"+params.Encode())
 	if nil != err {
@@ -50,6 +51,10 @@ func (wm *WeMediaClient) GetUserAccessToken(code string) (rsp *UserAccessTokenRs
 	}
 	rsp = &UserAccessTokenRsp{}
 	err = json.Unmarshal(data, rsp)
+	if nil != err {
+		return
+	}
+	err = rsp.Check()
 	return
 }
 
@@ -65,5 +70,9 @@ func (wm *WeMediaClient) RefreshUserAccessToken(refreshToken string) (rsp *UserA
 	}
 	rsp = &UserAccessTokenRsp{}
 	err = json.Unmarshal(data, rsp)
+	if nil != err {
+		return
+	}
+	err = rsp.Check()
 	return
 }
