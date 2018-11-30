@@ -14,6 +14,8 @@ const (
 	WxAPIURL = "https://api.weixin.qq.com"
 	//WxPayURL wechat api url
 	WxPayURL = "https://api.mch.weixin.qq.com"
+	//WxOpenURL wechat open
+	WxOpenURL = "https://open.weixin.qq.com"
 )
 
 //WxErrorResponse wechat common api response
