@@ -12,6 +12,7 @@ const (
 	authorizeURL     = core.WxOpenURL + "/connect/oauth2/authorize"
 	accessTokenURL   = core.WxAPIURL + "/sns/oauth2/access_token"
 	refreshTokenURL  = core.WxAPIURL + "/sns/oauth2/refresh_token"
+	userInfoURL      = core.WxAPIURL + "/sns/userinfo"
 	responseTypeCode = "code"
 	grantTypeRefresh = "refresh_token"
 	grantTypeAuth    = "authorization_code"
@@ -26,6 +27,20 @@ type UserAccessTokenRsp struct {
 	OpenID       string `json:"openid"`
 	Scope        string `json:"scope"`
 	UnionID      string `json:"unionid"`
+}
+
+//UserInfoRsp 用户信息返回
+type UserInfoRsp struct {
+	core.WxErrorResponse
+	OpenID     string   `json:"openid"`
+	Nickname   string   `json:"nickname"`
+	Sex        string   `json:"sex"`
+	Province   string   `json:"province"`
+	City       string   `json:"city"`
+	Country    string   `json:"country"`
+	HeadImgURL string   `json:"headimgurl"`
+	Privilege  []string `json:"privilege"`
+	UnionID    string   `json:"unionid"`
 }
 
 //AuthCodeURL 获取链接
@@ -70,6 +85,25 @@ func (wm *WeMediaClient) RefreshUserAccessToken(refreshToken string) (rsp *UserA
 		return
 	}
 	rsp = &UserAccessTokenRsp{}
+	err = json.Unmarshal(data, rsp)
+	if nil != err {
+		return
+	}
+	err = rsp.Check()
+	return
+}
+
+//UserInfo 用户信息
+func (wm *WeMediaClient) UserInfo(accessToken string, openID string) (rsp *UserInfoRsp, err error) {
+	params := url.Values{}
+	params.Set("access_token", accessToken)
+	params.Set("openid", openID)
+	params.Set("lang", "zh_CN")
+	data, err := util.HTTPGet(nil, userInfoURL+"?"+params.Encode())
+	if nil != err {
+		return
+	}
+	rsp = &UserInfoRsp{}
 	err = json.Unmarshal(data, rsp)
 	if nil != err {
 		return

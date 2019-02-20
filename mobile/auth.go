@@ -82,7 +82,7 @@ func (wm *WeMobileClient) RefreshUserAccessToken(refreshToken string) (rsp *User
 	return
 }
 
-//UserInfo 刷新用户AccessToken
+//UserInfo 用户信息
 func (wm *WeMobileClient) UserInfo(accessToken string, openID string) (rsp *UserInfoRsp, err error) {
 	params := url.Values{}
 	params.Set("access_token", accessToken)
