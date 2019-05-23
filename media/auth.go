@@ -26,7 +26,7 @@ type UserAccessTokenRsp struct {
 	RefreshToken string `json:"refresh_token"`
 	OpenID       string `json:"openid"`
 	Scope        string `json:"scope"`
-	UnionID      string `json:"unionid"`
+	// UnionID      string `json:"unionid"`
 }
 
 //UserInfoRsp 用户信息返回
