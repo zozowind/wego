@@ -38,6 +38,10 @@ func (wm *WeMediaClient) EventHandler(r *http.Request) (response []byte, err err
 		}
 	}
 
+	if nil == reply {
+		return
+	}
+
 	err = buildResponse(reply, msg.FromUserName, msg.ToUserName)
 	if nil != err {
 		return
@@ -134,9 +138,6 @@ func defaultEventHandler(msg *message.MixMessage) (reply *message.Reply, err err
 }
 
 func buildResponse(reply *message.Reply, toUser string, fromUser string) (err error) {
-	if nil == reply {
-		return
-	}
 	msgType := reply.MsgType
 	switch msgType {
 	case message.MsgTypeText:
