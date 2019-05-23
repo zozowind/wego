@@ -11,5 +11,6 @@ type WeMediaClient struct {
 	TicketServer  TicketServer
 	MessageConfig *core.MessageConfig
 
-	eventHandler map[message.EventType]func(*message.MixMessage) (*message.Reply, error)
+	eventHandlers       map[message.EventType]func(*message.MixMessage) (*message.Reply, error)
+	defaultEventHandler func(*message.MixMessage) (*message.Reply, error)
 }
