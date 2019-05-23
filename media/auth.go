@@ -122,9 +122,13 @@ func (wm *WeMediaClient) UserInfo(userAccessToken string, openID string) (rsp *U
 }
 
 //GetUserInfo 使用/cgi-bin/user/info获取用户信息
-func (wm *WeMediaClient) GetUserInfo(accessToken string, openID string) (rsp *UserInfoRsp, err error) {
+func (wm *WeMediaClient) GetUserInfo(openID string) (rsp *UserInfoRsp, err error) {
+	token, err := wm.TokenServer.Token()
+	if nil != err {
+		return
+	}
 	params := url.Values{}
-	params.Set("access_token", accessToken)
+	params.Set("access_token", token)
 	params.Set("openid", openID)
 	params.Set("lang", "zh_CN")
 	data, err := util.HTTPGet(nil, userInfoBinURL+"?"+params.Encode())
