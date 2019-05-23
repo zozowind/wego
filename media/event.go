@@ -26,12 +26,15 @@ func (wm *WeMediaClient) EventHandler(r *http.Request) (response []byte, err err
 	}
 
 	var reply *message.Reply
-	if nil != wm.eventHandler {
-		handler, ok := wm.eventHandler[msg.Event]
+	if nil != wm.eventHandlers {
+		handler, ok := wm.eventHandlers[msg.Event]
 		if ok {
 			reply, err = handler(msg)
 		} else {
-			reply, err = defaultEventHandler(msg)
+			if nil == wm.defaultEventHandler {
+				wm.defaultEventHandler = defaultEventHandler
+			}
+			reply, err = wm.defaultEventHandler(msg)
 		}
 	}
 
@@ -73,15 +76,15 @@ func (wm *WeMediaClient) EventHandler(r *http.Request) (response []byte, err err
 
 //OnEvent 注册公众号的事件处理方法
 func (wm *WeMediaClient) OnEvent(e message.EventType, fn func(*message.MixMessage) (*message.Reply, error)) {
-	if wm.eventHandler == nil {
-		wm.eventHandler = map[message.EventType]func(*message.MixMessage) (*message.Reply, error){}
+	if wm.eventHandlers == nil {
+		wm.eventHandlers = map[message.EventType]func(*message.MixMessage) (*message.Reply, error){}
 	}
-	wm.eventHandler[e] = fn
+	wm.eventHandlers[e] = fn
 }
 
-func defaultEventHandler(msg *message.MixMessage) (reply *message.Reply, err error) {
-	fmt.Printf("%v", msg)
-	return
+//SetDefaultEventHandler 设置默认的事件处理
+func (wm *WeMediaClient) SetDefaultEventHandler(fn func(*message.MixMessage) (*message.Reply, error)) {
+	wm.defaultEventHandler = fn
 }
 
 func (wm *WeMediaClient) eventMessage(r *http.Request) (msg *message.MixMessage, random []byte, err error) {
@@ -122,6 +125,11 @@ func (wm *WeMediaClient) eventMessage(r *http.Request) (msg *message.MixMessage,
 	//解析消息结构体
 	msg = &message.MixMessage{}
 	err = xml.Unmarshal(rawXMLMsgBytes, msg)
+	return
+}
+
+func defaultEventHandler(msg *message.MixMessage) (reply *message.Reply, err error) {
+	fmt.Printf("%v", msg)
 	return
 }
 
