@@ -13,6 +13,7 @@ const (
 	accessTokenURL   = core.WxAPIURL + "/sns/oauth2/access_token"
 	refreshTokenURL  = core.WxAPIURL + "/sns/oauth2/refresh_token"
 	userInfoURL      = core.WxAPIURL + "/sns/userinfo"
+	userInfoBinURL   = core.WxAPIURL + "/cgi-bin/user/info"
 	responseTypeCode = "code"
 	grantTypeRefresh = "refresh_token"
 	grantTypeAuth    = "authorization_code"
@@ -32,15 +33,23 @@ type UserAccessTokenRsp struct {
 //UserInfoRsp 用户信息返回
 type UserInfoRsp struct {
 	core.WxErrorResponse
-	OpenID     string   `json:"openid"`
-	Nickname   string   `json:"nickname"`
-	Sex        int      `json:"sex"`
-	Province   string   `json:"province"`
-	City       string   `json:"city"`
-	Country    string   `json:"country"`
-	HeadImgURL string   `json:"headimgurl"`
-	Privilege  []string `json:"privilege"`
-	UnionID    string   `json:"unionid"`
+	OpenID         string   `json:"openid"`
+	Nickname       string   `json:"nickname"`
+	Sex            int      `json:"sex"`
+	Province       string   `json:"province"`
+	City           string   `json:"city"`
+	Country        string   `json:"country"`
+	HeadImgURL     string   `json:"headimgurl"`
+	Privilege      []string `json:"privilege"`
+	UnionID        string   `json:"unionid"`
+	Subscribe      int      `json:"subscribe"`
+	SubscribeTime  int64    `json:"subscribe_time"`
+	Remark         string   `json:"remark"`
+	GroupID        int64    `json:"groupid"`
+	TagIDList      []int64  `json:"tagid_list"`
+	SubscribeScene string   `json:"subscribe_scene"`
+	QRScene        int64    `json:"qr_scene"`
+	QrSceneStr     string   `json:"qr_scene_str"`
 }
 
 //AuthCodeURL 获取链接
@@ -94,12 +103,31 @@ func (wm *WeMediaClient) RefreshUserAccessToken(refreshToken string) (rsp *UserA
 }
 
 //UserInfo 用户信息
-func (wm *WeMediaClient) UserInfo(accessToken string, openID string) (rsp *UserInfoRsp, err error) {
+func (wm *WeMediaClient) UserInfo(userAccessToken string, openID string) (rsp *UserInfoRsp, err error) {
+	params := url.Values{}
+	params.Set("access_token", userAccessToken)
+	params.Set("openid", openID)
+	params.Set("lang", "zh_CN")
+	data, err := util.HTTPGet(nil, userInfoURL+"?"+params.Encode())
+	if nil != err {
+		return
+	}
+	rsp = &UserInfoRsp{}
+	err = json.Unmarshal(data, rsp)
+	if nil != err {
+		return
+	}
+	err = rsp.Check()
+	return
+}
+
+//GetUserInfo 使用/cgi-bin/user/info获取用户信息
+func (wm *WeMediaClient) GetUserInfo(accessToken string, openID string) (rsp *UserInfoRsp, err error) {
 	params := url.Values{}
 	params.Set("access_token", accessToken)
 	params.Set("openid", openID)
 	params.Set("lang", "zh_CN")
-	data, err := util.HTTPGet(nil, userInfoURL+"?"+params.Encode())
+	data, err := util.HTTPGet(nil, userInfoBinURL+"?"+params.Encode())
 	if nil != err {
 		return
 	}

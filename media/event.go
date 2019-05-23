@@ -47,9 +47,7 @@ func (wm *WeMediaClient) EventHandler(r *http.Request) (response []byte, err err
 		return
 	}
 
-	if wm.MessageConfig.Mode == core.MessageModePlain {
-		response, err = xml.Marshal(reply.MsgData)
-	} else {
+	if wm.MessageConfig.Mode == core.MessageModeEncry {
 		var responseRawXMLMsg []byte
 		responseRawXMLMsg, err = xml.Marshal(reply.MsgData)
 		//安全模式下对消息进行加密
@@ -74,6 +72,8 @@ func (wm *WeMediaClient) EventHandler(r *http.Request) (response []byte, err err
 			Nonce:        nonce,
 		}
 		response, err = xml.Marshal(replyMsg)
+	} else {
+		response, err = xml.Marshal(reply.MsgData)
 	}
 	return
 }
@@ -94,13 +94,7 @@ func (wm *WeMediaClient) SetDefaultEventHandler(fn func(*message.MixMessage) (*m
 func (wm *WeMediaClient) eventMessage(r *http.Request) (msg *message.MixMessage, random []byte, err error) {
 	// safe mode
 	var rawXMLMsgBytes []byte
-	if wm.MessageConfig.Mode == core.MessageModePlain {
-		rawXMLMsgBytes, err = ioutil.ReadAll(r.Body)
-		if err != nil {
-			//消息内容读取失败
-			return
-		}
-	} else {
+	if wm.MessageConfig.Mode == core.MessageModeEncry {
 		encryptedXMLMsg := &message.EncryptedXMLMsg{}
 		err = xml.NewDecoder(r.Body).Decode(encryptedXMLMsg)
 		if err != nil {
@@ -122,6 +116,12 @@ func (wm *WeMediaClient) eventMessage(r *http.Request) (msg *message.MixMessage,
 		}
 		random, rawXMLMsgBytes, err = util.DecryptMsg(wm.AppID, encryptedXMLMsg.EncryptedMsg, wm.MessageConfig.EncodingAESKey)
 		if nil != err {
+			return
+		}
+	} else {
+		rawXMLMsgBytes, err = ioutil.ReadAll(r.Body)
+		if err != nil {
+			//消息内容读取失败
 			return
 		}
 	}
