@@ -15,6 +15,11 @@ import (
 
 //EventHandler 事件处理
 func (wm *WeMediaClient) EventHandler(r *http.Request) (response []byte, err error) {
+	if r.FormValue("echostr") != "" {
+		response = []byte(r.FormValue("echostr"))
+		return
+	}
+
 	msg, random, err := wm.eventMessage(r)
 	if nil != err {
 		return
