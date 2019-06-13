@@ -12,6 +12,7 @@ const (
 	jsTicketURL = core.WxAPIURL + "/cgi-bin/ticket/getticket?access_token=%s&type=jsapi"
 )
 
+//JsAPITicket jsapiticket
 type JsAPITicket struct {
 	ErrCode   int    `json:"errcode"`
 	ErrMsg    string `json:"errmsg"`

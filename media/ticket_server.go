@@ -72,7 +72,7 @@ NEW_TICK_DURATION:
 	}
 }
 
-//Token get ticket from CacheJsTicketServer
+//Ticket Token get ticket from CacheJsTicketServer
 func (cts *CacheJsTicketServer) Ticket() (string, error) {
 	ticket, err := cts.CacheServer.Get()
 	if nil != err || ticket == "" {
@@ -81,7 +81,7 @@ func (cts *CacheJsTicketServer) Ticket() (string, error) {
 	return ticket, err
 }
 
-//RefreshToken refresh ticket from CacheJsTicketServer
+//RefreshTicket RefreshToken refresh ticket from CacheJsTicketServer
 func (cts *CacheJsTicketServer) RefreshTicket() (string, error) {
 	err := cts.CacheServer.Lock()
 	if nil != err {
