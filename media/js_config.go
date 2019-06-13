@@ -11,6 +11,7 @@ import (
 	"github.com/zozowind/wego/util"
 )
 
+//WeJSConfig jsconfig
 type WeJSConfig struct {
 	NonceStr    string `json:"noncestr" query:"noncestr"`
 	JsAPITicket string `json:"jsapi_ticket" query:"jsapi_ticket"`
@@ -34,6 +35,7 @@ func (conf *WeJSConfig) sign() error {
 	return nil
 }
 
+//JsConfig 生成JSconfig
 func (wm *WeMediaClient) JsConfig(url string) (*WeJSConfig, error) {
 	//处理url
 	var re = regexp.MustCompile(`#.*`)
