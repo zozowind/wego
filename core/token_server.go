@@ -93,6 +93,8 @@ NEW_TICK_DURATION:
 	for {
 		select {
 		case accessToken := <-cts.RefreshTokenReqChan:
+			//保存到缓存中
+			_ = cts.CacheServer.Set(accessToken.Token, time.Duration(accessToken.ExpiresIn)*time.Second)
 			tickDuration = time.Duration(accessToken.ExpiresIn) * time.Second
 			ticker.Stop()
 			goto NEW_TICK_DURATION
@@ -101,6 +103,8 @@ NEW_TICK_DURATION:
 			if nil == err {
 				accessToken, err := cts.TokenFunc()
 				if nil == err {
+					//保存到缓存中
+					_ = cts.CacheServer.Set(accessToken.Token, time.Duration(accessToken.ExpiresIn)*time.Second)
 					newTickDuration := time.Duration(accessToken.ExpiresIn) * time.Second
 					if abs(tickDuration-newTickDuration) > time.Second*5 {
 						tickDuration = newTickDuration
@@ -128,7 +132,7 @@ func (cts *CacheTokenServer) RefreshToken() (string, error) {
 	err := cts.CacheServer.Lock()
 	if nil != err {
 		//retry
-		cts.CacheServer.Unlock()
+		// cts.CacheServer.Unlock()
 		return retryToken(3, 300*time.Millisecond, cts.CacheServer.Get)
 	}
 	accessToken, err := cts.TokenFunc()
@@ -136,9 +140,6 @@ func (cts *CacheTokenServer) RefreshToken() (string, error) {
 	if nil != err {
 		return "", err
 	}
-	err = cts.CacheServer.Set(accessToken.Token, time.Duration(accessToken.ExpiresIn)*time.Second)
-	if nil != err {
-		return "", err
-	}
+	cts.RefreshTokenReqChan <- accessToken
 	return accessToken.Token, nil
 }
