@@ -50,16 +50,18 @@ NEW_TICK_DURATION:
 	ticker := time.NewTicker(tickDuration)
 	for {
 		select {
-		case JsAPITicket := <-cts.RefreshTicketReqChan:
-			tickDuration = time.Duration(JsAPITicket.ExpiresIn) * time.Second
+		case jsAPITicket := <-cts.RefreshTicketReqChan:
+			_ = cts.CacheServer.Set(jsAPITicket.Ticket, time.Duration(jsAPITicket.ExpiresIn)*time.Second)
+			tickDuration = time.Duration(jsAPITicket.ExpiresIn) * time.Second
 			ticker.Stop()
 			goto NEW_TICK_DURATION
 		case <-ticker.C:
 			err := cts.CacheServer.Lock()
 			if nil == err {
-				JsAPITicket, err := cts.TicketFunc()
+				jsAPITicket, err := cts.TicketFunc()
 				if nil == err {
-					newTickDuration := time.Duration(JsAPITicket.ExpiresIn) * time.Second
+					_ = cts.CacheServer.Set(jsAPITicket.Ticket, time.Duration(jsAPITicket.ExpiresIn)*time.Second)
+					newTickDuration := time.Duration(jsAPITicket.ExpiresIn) * time.Second
 					if abs(tickDuration-newTickDuration) > time.Second*5 {
 						tickDuration = newTickDuration
 						ticker.Stop()
@@ -86,16 +88,12 @@ func (cts *CacheJsTicketServer) RefreshTicket() (string, error) {
 	err := cts.CacheServer.Lock()
 	if nil != err {
 		//retry
-		cts.CacheServer.Unlock()
 		return retryTicket(3, 300*time.Millisecond, cts.CacheServer.Get)
 	}
 	jsAPITicket, err := cts.TicketFunc()
 	if nil != err {
 		return "", err
 	}
-	err = cts.CacheServer.Set(jsAPITicket.Ticket, time.Duration(jsAPITicket.ExpiresIn)*time.Second)
-	if nil != err {
-		return "", err
-	}
+	cts.RefreshTicketReqChan <- jsAPITicket
 	return jsAPITicket.Ticket, nil
 }
