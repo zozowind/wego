@@ -20,7 +20,7 @@ const (
 )
 
 //SetMenu 设置按钮
-func (wm *WeMediaClient) SetMenu(buttons []*menu.Button) (err error) {
+func (wm *WeMediaClient) SetMenu(buttons []*menu.Button, rule *menu.MatchRule) (err error) {
 	token, err := wm.TokenServer.Token()
 	if nil != err {
 		return
@@ -29,7 +29,8 @@ func (wm *WeMediaClient) SetMenu(buttons []*menu.Button) (err error) {
 	params.Set("access_token", token)
 
 	req := &menu.SetReq{
-		Button: buttons,
+		Button:    buttons,
+		MatchRule: rule,
 	}
 
 	data, err := util.HTTPJsonPost(nil, menuCreateURL+"?"+params.Encode(), req)
