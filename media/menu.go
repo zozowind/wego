@@ -20,7 +20,7 @@ const (
 )
 
 //SetMenu 设置按钮
-func (wm *WeMediaClient) SetMenu(buttons []*menu.Button, rule *menu.MatchRule) (err error) {
+func (wm *WeMediaClient) SetMenu(buttons []*menu.Button) (err error) {
 	token, err := wm.TokenServer.Token()
 	if nil != err {
 		return
@@ -29,8 +29,7 @@ func (wm *WeMediaClient) SetMenu(buttons []*menu.Button, rule *menu.MatchRule) (
 	params.Set("access_token", token)
 
 	req := &menu.SetReq{
-		Button:    buttons,
-		MatchRule: rule,
+		Button: buttons,
 	}
 
 	data, err := util.HTTPJsonPost(nil, menuCreateURL+"?"+params.Encode(), req)
@@ -46,25 +45,101 @@ func (wm *WeMediaClient) SetMenu(buttons []*menu.Button, rule *menu.MatchRule) (
 	return
 }
 
-// //GetMenu 获取菜单配置
-// func (wm *WeMediaClient) GetMenu() (resMenu ResMenu, err error) {
+// GetMenu 获取菜单配置
+func (wm *WeMediaClient) GetMenu() (menus *menu.MenusRes, err error) {
+	token, err := wm.TokenServer.Token()
+	if nil != err {
+		return
+	}
+	params := url.Values{}
+	params.Set("access_token", token)
 
-// }
+	data, err := util.HTTPGet(nil, menuGetURL+"?"+params.Encode())
+	rsp := &core.WxErrorResponse{}
+	err = json.Unmarshal(data, rsp)
+	if nil != err {
+		return
+	}
+	err = rsp.Check()
+	if nil != err {
+		return
+	}
+	menus = &menu.MenusRes{}
+	err = json.Unmarshal(data, menus)
+	return
+}
 
-// //DeleteMenu 删除菜单
-// func (wm *WeMediaClient) DeleteMenu() error {
+//DeleteMenu 删除菜单
+func (wm *WeMediaClient) DeleteMenu() (err error) {
+	token, err := wm.TokenServer.Token()
+	if nil != err {
+		return
+	}
+	params := url.Values{}
+	params.Set("access_token", token)
 
-// }
+	data, err := util.HTTPGet(nil, menuDeleteURL+"?"+params.Encode())
+	rsp := &core.WxErrorResponse{}
+	err = json.Unmarshal(data, rsp)
+	if nil != err {
+		return
+	}
+	err = rsp.Check()
+	return
+}
 
-// //AddConditional 添加个性化菜单
-// func (wm *WeMediaClient) AddConditional(buttons []*Button, matchRule *menu.MatchRule) error {
+//AddConditional 添加个性化菜单
+func (wm *WeMediaClient) AddConditional(buttons []*menu.Button, rule *menu.MatchRule) (err error) {
+	token, err := wm.TokenServer.Token()
+	if nil != err {
+		return
+	}
+	params := url.Values{}
+	params.Set("access_token", token)
 
-// }
+	req := &menu.SetReq{
+		Button:    buttons,
+		MatchRule: rule,
+	}
 
-// //DeleteConditional 删除个性化菜单
-// func (wm *WeMediaClient) DeleteConditional(menuID int64) error {
+	data, err := util.HTTPJsonPost(nil, menuAddConditionalURL+"?"+params.Encode(), req)
+	if nil != err {
+		return
+	}
+	rsp := &core.WxErrorResponse{}
+	err = json.Unmarshal(data, rsp)
+	if nil != err {
+		return
+	}
+	err = rsp.Check()
+	return
+}
 
-// }
+//DeleteConditional 删除个性化菜单
+func (wm *WeMediaClient) DeleteConditional(menuID int64) (err error) {
+	token, err := wm.TokenServer.Token()
+	if nil != err {
+		return
+	}
+	params := url.Values{}
+	params.Set("access_token", token)
+
+	req := &menu.DeleteConditionalReq{
+		MenuID: menuID,
+	}
+
+	data, err := util.HTTPJsonPost(nil, menuDeleteConditionalURL+"?"+params.Encode(), req)
+	if nil != err {
+		return
+	}
+	rsp := &core.WxErrorResponse{}
+	err = json.Unmarshal(data, rsp)
+	if nil != err {
+		return
+	}
+	err = rsp.Check()
+	return
+}
 
 // //MenuTryMatch 菜单匹配
 // func (wm *WeMediaClient) MenuTryMatch(userID string) (buttons []Button, err error) {
