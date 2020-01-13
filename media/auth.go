@@ -143,3 +143,13 @@ func (wm *WeMediaClient) GetUserInfo(openID string) (rsp *UserInfoRsp, err error
 	err = rsp.Check()
 	return
 }
+
+//CheckAuthHosts 检查回调域名
+func (wm *WeMediaClient) CheckAuthHosts(host string) bool {
+	for _, h := range wm.AuthHosts {
+		if h == host {
+			return true
+		}
+	}
+	return false
+}
