@@ -5,9 +5,9 @@ import (
 )
 
 //WeAppClient wechat app client struct
-
 type WeAppClient struct {
 	core.WeBase
+	NotifyURL     string
 	MessageConfig *core.MessageConfig
 }
 
