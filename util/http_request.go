@@ -2,7 +2,9 @@ package util
 
 import (
 	"bytes"
+	"crypto/tls"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -91,7 +93,7 @@ func HTTPXMLPost(httpClient *http.Client, url string, params url.Values) ([]byte
 	if params != nil {
 		reader = strings.NewReader(request)
 	}
-	resp, err := httpClient.Post(url, "text/xml", reader)
+	resp, err := httpClient.Post(url, "text/xml; charset=utf-8", reader)
 	if err != nil {
 		return response, err
 	}
@@ -156,6 +158,39 @@ func HTTPFormPost(httpClient *http.Client, url string, params url.Values, files 
 	response := []byte{}
 	// post to server
 	resp, err := httpClient.Post(url, contentType, bodyBuf)
+	if err != nil {
+		return response, err
+	}
+
+	response, err = ioutil.ReadAll(resp.Body)
+	defer resp.Body.Close()
+	if err != nil {
+		return response, err
+	}
+	return response, nil
+}
+
+// HTTPXMLPostWithCertificate http post request with XML in body and cert
+func HTTPXMLPostWithCertificate(httpClient *http.Client, url string, params url.Values, cert *tls.Certificate) ([]byte, error) {
+	if httpClient == nil {
+		httpClient = DefaultHTTPClient
+	}
+	if nil == cert {
+		return nil, errors.New("certificate is not exist")
+	}
+	httpClient.Transport = &http.Transport{
+		TLSClientConfig: &tls.Config{
+			Certificates: []tls.Certificate{*cert},
+		},
+		DisableCompression: true,
+	}
+	request := URLValueToXML(params)
+	response := []byte{}
+	var reader io.Reader
+	if params != nil {
+		reader = strings.NewReader(request)
+	}
+	resp, err := httpClient.Post(url, "text/xml; charset=utf-8", reader)
 	if err != nil {
 		return response, err
 	}

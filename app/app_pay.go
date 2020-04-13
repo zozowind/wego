@@ -109,18 +109,19 @@ type UnifiedOrderRequest struct {
 	SpbillCreateIP string `xml:"spbill_create_ip"` // APP和网页支付提交用户端ip，Native支付填调用微信支付API的机器IP。
 	NotifyURL      string `xml:"notify_url"`       // 接收微信支付异步通知回调地址，通知url必须为直接可访问的url，不能携带参数。
 	TradeType      string `xml:"trade_type"`       // 取值如下：JSAPI，NATIVE，APP，详细说明见参数规定,这里取JSAPI
-	OpenID         string `xml:"openid"`           // rade_type=JSAPI，此参数必传，用户在商户appid下的唯一标识。
+	OpenID         string `xml:"openid"`           // trade_type=JSAPI，此参数必传，用户在商户appid下的唯一标识。
 	//Sign           string `xml:"sign"`             //签名
 	// 可选参数
-	DeviceInfo string    `xml:"device_info"` // 终端设备号(门店号或收银设备ID)，注意：PC网页或公众号内支付请传"WEB"
-	SignType   string    `xml:"sign_type"`   // 签名类型，默认为MD5，支持HMAC-SHA256和MD5。
-	Detail     string    `xml:"detail"`      // 单品优惠字段(暂未上线)
-	Attach     string    `xml:"attach"`      // 附加数据，在查询API和支付通知中原样返回，该字段主要用于商户携带订单的自定义数据
-	FeeType    string    `xml:"fee_type"`    // 符合ISO 4217标准的三位字母代码，默认人民币：CNY，其他值列表详见货币类型
-	TimeStart  time.Time `xml:"time_start"`  // 订单生成时间，格式为yyyyMMddHHmmss，如2009年12月25日9点10分10秒表示为20091225091010。其他详见时间规则
-	TimeExpire time.Time `xml:"time_expire"` // 订单失效时间，格式为yyyyMMddHHmmss，如2009年12月27日9点10分10秒表示为20091227091010。其他详见时间规则
-	GoodsTag   string    `xml:"goods_tag"`   // 商品标记，代金券或立减优惠功能的参数，说明详见代金券或立减优惠
-	LimitPay   string    `xml:"limit_pay"`   // no_credit--指定不能使用信用卡支付
+	DeviceInfo    string    `xml:"device_info"`    // 终端设备号(门店号或收银设备ID)，注意：PC网页或公众号内支付请传"WEB"
+	SignType      string    `xml:"sign_type"`      // 签名类型，默认为MD5，支持HMAC-SHA256和MD5。
+	Detail        string    `xml:"detail"`         // 单品优惠字段(暂未上线)
+	Attach        string    `xml:"attach"`         // 附加数据，在查询API和支付通知中原样返回，该字段主要用于商户携带订单的自定义数据
+	FeeType       string    `xml:"fee_type"`       // 符合ISO 4217标准的三位字母代码，默认人民币：CNY，其他值列表详见货币类型
+	TimeStart     time.Time `xml:"time_start"`     // 订单生成时间，格式为yyyyMMddHHmmss，如2009年12月25日9点10分10秒表示为20091225091010。其他详见时间规则
+	TimeExpire    time.Time `xml:"time_expire"`    // 订单失效时间，格式为yyyyMMddHHmmss，如2009年12月27日9点10分10秒表示为20091227091010。其他详见时间规则
+	GoodsTag      string    `xml:"goods_tag"`      // 商品标记，代金券或立减优惠功能的参数，说明详见代金券或立减优惠
+	LimitPay      string    `xml:"limit_pay"`      // no_credit--指定不能使用信用卡支付
+	ProfitSharing string    `xml:"profit_sharing"` // 是否分账，Y需要分账，N不分账，字母要求大写，默认认不分账
 }
 
 //UnifiedOrderResponse unified order response struct
@@ -157,7 +158,7 @@ func (client *WeAppClient) GeneratePayPackage(request *UnifiedOrderRequest) (*Pa
 	request.MchID = client.PayID
 	request.NonceStr = util.RandString(32)
 	request.TradeType = "JSAPI"
-	request.SignType = "MD5" //暂时只支持MD5
+	request.SignType = util.SignTypeMD5 //暂时只支持MD5
 	params, err := util.StructToURLValue(request, "xml")
 	if nil != err {
 		return nil, errmsg.GetError(errUnifiedOrderReq, err.Error())

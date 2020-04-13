@@ -1,9 +1,12 @@
 package util
 
 import (
+	"crypto/hmac"
 	"crypto/md5"
 	"crypto/sha1"
+	"crypto/sha256"
 	"encoding/hex"
+	"fmt"
 	"net/url"
 	"sort"
 	"strings"
@@ -15,6 +18,7 @@ func SignMd5(data, secretKey string) string {
 	if err != nil {
 		return ""
 	}
+	fmt.Println("====data===:" + data)
 	data = data + "&key=" + secretKey
 	m := md5.New()
 	m.Write([]byte(data))
@@ -35,4 +39,15 @@ func StrSortSha1Sign(strs []string) string {
 	b := strings.Join(strs, "")
 	hashsum := sha1.Sum([]byte(b))
 	return hex.EncodeToString(hashsum[:])
+}
+
+// SignSha256 add data signatrue by Sha256
+func SignSha256(data, secretKey string) string {
+	data, err := url.QueryUnescape(data)
+	if err != nil {
+		return ""
+	}
+	hm := hmac.New(sha256.New, []byte(secretKey))
+	hm.Write([]byte(data + "&key=" + secretKey))
+	return fmt.Sprintf("%X", hm.Sum(nil))
 }
