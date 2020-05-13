@@ -38,7 +38,7 @@ func (qr *QrcodeA) URL() string {
 //QrcodeB qrcode of type b
 type QrcodeB struct {
 	Scene     string `json:"scene"`
-	Path      string `json:"path"`
+	Page      string `json:"page"`
 	Width     uint   `json:"width"`
 	AutoColor bool   `json:"auto_color"`
 	LineColor *RGB   `json:"line_color"`
