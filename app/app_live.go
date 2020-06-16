@@ -37,6 +37,21 @@ const (
 	//actionGetReplay 获取回放action
 	actionGetReplay = "get_replay"
 
+	//LiveStatusDoing 直播中
+	LiveStatusDoing = 101
+	//LiveStatusNotStart 未开始
+	LiveStatusNotStart = 102
+	//LiveStatusOver 已结束
+	LiveStatusOver = 103
+	//LiveStatusForbidden 禁播
+	LiveStatusForbidden = 104
+	//LiveStatusPause 暂停
+	LiveStatusPause = 105
+	//LiveStatusException 异常
+	LiveStatusException = 106
+	//LiveStatusExpire 已过期
+	LiveStatusExpire = 107
+
 	//PriceTypeOne 一口价
 	PriceTypeOne = 1
 	//PriceTypeRange 价格区间
