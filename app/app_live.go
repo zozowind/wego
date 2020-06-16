@@ -135,13 +135,13 @@ type Room struct {
 	EndTime    int64   `json:"end_time"`
 	AnchorName string  `json:"anchor_name"`
 	Goods      []*Good `json:"goods"` // 商品详细
-	Total      int64   `json:"total"` // 总数
 }
 
 //GetRoomListResponse 获取直播间列表结果
 type GetRoomListResponse struct {
 	core.WxErrorResponse
 	RoomInfo []*Room `json:"room_info"`
+	Total    int64   `json:"total"` // 总数
 }
 
 //GetRoomList 获取直播间列表
