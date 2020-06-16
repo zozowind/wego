@@ -254,7 +254,7 @@ type AddGoodsParam struct {
 //AddGoodsResponse 商品添加并提审结果
 type AddGoodsResponse struct {
 	core.WxErrorResponse
-	GoodID  int64 `json:"goodsId"` //商品ID
+	GoodsID int64 `json:"goodsId"` //商品ID
 	AuditID int64 `json:"auditId"` //审核单ID
 }
 
