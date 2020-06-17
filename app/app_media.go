@@ -1,6 +1,7 @@
 package app
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/url"
@@ -35,7 +36,8 @@ const (
 //UploadMediaParam 上传临时素材
 type UploadMediaParam struct {
 	Type string
-	File *util.RequestFile
+	Name string
+	Data []byte
 }
 
 //UploadMediaResponse 获取临时素材结果
@@ -54,10 +56,14 @@ func (client *WeAppClient) UploadMedia(param *UploadMediaParam) (res *UploadMedi
 	if nil != err {
 		return
 	}
+	f := &util.RequestFile{
+		Name: param.Name,
+		Data: bytes.NewBuffer(data),
+	}
 	url := fmt.Sprintf(uploadMediaURL, token, param.Type)
 	files := map[string][]*util.RequestFile{
 		"media": []*util.RequestFile{
-			param.File,
+			f,
 		},
 	}
 	data, err = util.HTTPFormPost(client.HTTPClient, url, nil, files)
