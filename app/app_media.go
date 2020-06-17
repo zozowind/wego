@@ -2,9 +2,11 @@ package app
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/url"
 
 	"github.com/zozowind/wego/core"
+	"github.com/zozowind/wego/util"
 )
 
 // 直播相关接口
@@ -30,37 +32,45 @@ const (
 	MediaTypeThumb = "thumb"
 )
 
-// //UploadMediaParam 获取临时素材参数
-// type UploadMediaParam struct {
-// 	core.WxErrorResponse
-// 	VideoURL string `json:"video_url"`
-// }
+//UploadMediaParam 上传临时素材
+type UploadMediaParam struct {
+	Type string
+	File *util.RequestFile
+}
 
-// //UploadMediaResponse 获取临时素材结果
-// type UploadMediaResponse struct {
-// 	core.WxErrorResponse
-// 	Type      string `json:"type"`
-// 	MediaID   string `json:"media_id"`
-// 	CreatedAt int64  `json:"created_at"`
-// }
+//UploadMediaResponse 获取临时素材结果
+type UploadMediaResponse struct {
+	core.WxErrorResponse
+	Type      string `json:"type"`
+	MediaID   string `json:"media_id"`
+	CreatedAt int64  `json:"created_at"`
+}
 
-// //UploadMedia 获取临时素材
-// func (client *WeAppClient) UploadMedia(string) (res *UploadMediaResponse, err error) {
-// 	res = &GetMediaResponse{}
-
-// 	v := url.Values{}
-// 	v.Set("media_id", mediaID)
-// 	data, err := client.PostResponseWithToken(getMediaURL, v)
-// 	if nil != err {
-// 		return
-// 	}
-// 	err = json.Unmarshal(data, res)
-// 	if nil != err {
-// 		return
-// 	}
-// 	err = res.Check()
-// 	return
-// }
+//UploadMedia 上传临时素材
+func (client *WeAppClient) UploadMedia(param *UploadMediaParam) (res *UploadMediaResponse, err error) {
+	res = &UploadMediaResponse{}
+	data := []byte{}
+	token, err := client.Token()
+	if nil != err {
+		return
+	}
+	url := fmt.Sprintf(uploadMediaURL, token, param.Type)
+	files := map[string][]*util.RequestFile{
+		"media": []*util.RequestFile{
+			param.File,
+		},
+	}
+	data, err = util.HTTPFormPost(client.HTTPClient, url, nil, files)
+	if nil != err {
+		return
+	}
+	err = json.Unmarshal(data, res)
+	if nil != err {
+		return
+	}
+	err = res.Check()
+	return
+}
 
 //GetMediaResponse 获取临时素材结果
 type GetMediaResponse struct {
