@@ -58,7 +58,7 @@ func (client *WeAppClient) UploadMedia(param *UploadMediaParam) (res *UploadMedi
 	}
 	f := &util.RequestFile{
 		Name: param.Name,
-		Data: bytes.NewBuffer(data),
+		Data: bytes.NewBuffer(param.Data),
 	}
 	url := fmt.Sprintf(uploadMediaURL, token, param.Type)
 	files := map[string][]*util.RequestFile{
