@@ -18,7 +18,6 @@ func SignMd5(data, secretKey string) string {
 	if err != nil {
 		return ""
 	}
-	fmt.Println("====data===:" + data)
 	data = data + "&key=" + secretKey
 	m := md5.New()
 	m.Write([]byte(data))
