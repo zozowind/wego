@@ -126,15 +126,16 @@ type Good struct {
 
 //Room 房间信息
 type Room struct {
-	Name       string  `json:"name"`   // "name":"直播房间名"
-	RoomID     int64   `json:"roomid"` // "roomid": 1,
-	CoverImg   string  `json:"cover_img"`
-	ShareImg   string  `json:"share_img"`
-	LiveStatus int     `json:"live_status"`
-	StartTime  int64   `json:"start_time"`
-	EndTime    int64   `json:"end_time"`
-	AnchorName string  `json:"anchor_name"`
-	Goods      []*Good `json:"goods"` // 商品详细
+	Name         string  `json:"name"`   // "name":"直播房间名"
+	RoomID       int64   `json:"roomid"` // "roomid": 1,
+	CoverImg     string  `json:"cover_img"`
+	ShareImg     string  `json:"share_img"`
+	LiveStatus   int     `json:"live_status"`
+	StartTime    int64   `json:"start_time"`
+	EndTime      int64   `json:"end_time"`
+	AnchorName   string  `json:"anchor_name"`
+	Goods        []*Good `json:"goods"` // 商品详细
+	AnchorWechat string  `json:"anchorWechat"`
 }
 
 //GetRoomListResponse 获取直播间列表结果
@@ -209,7 +210,7 @@ type AddRoomGoodsParam struct {
 func (client *WeAppClient) AddRoomGoods(param *AddRoomGoodsParam) (res *core.WxErrorResponse, err error) {
 	res = &core.WxErrorResponse{}
 
-	data, err := client.PostWithToken(addGoodsURL, param)
+	data, err := client.PostWithToken(addRoomGoodsURL, param)
 	if nil != err {
 		return
 	}
@@ -262,7 +263,7 @@ type AddGoodsResponse struct {
 func (client *WeAppClient) AddGoods(param *AddGoodsParam) (res *AddGoodsResponse, err error) {
 	res = &AddGoodsResponse{}
 
-	data, err := client.PostWithToken(addRoomGoodsURL, param)
+	data, err := client.PostWithToken(addGoodsURL, param)
 	if nil != err {
 		return
 	}
