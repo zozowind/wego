@@ -50,3 +50,8 @@ func SignSha256(data, secretKey string) string {
 	hm.Write([]byte(data + "&key=" + secretKey))
 	return fmt.Sprintf("%X", hm.Sum(nil))
 }
+
+// CheckSingSha256 check data signatrue by Sha256
+func CheckSingSha256(data, secretKey, sign string) bool {
+	return SignSha256(data, secretKey) == sign
+}

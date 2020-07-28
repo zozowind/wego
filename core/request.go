@@ -12,7 +12,7 @@ import (
 const (
 	//WxAPIURL wechat api url
 	WxAPIURL = "https://api.weixin.qq.com"
-	//WxPayURL wechat api url
+	//WxPayURL wechat pay url
 	WxPayURL = "https://api.mch.weixin.qq.com"
 	//WxOpenURL wechat open
 	WxOpenURL = "https://open.weixin.qq.com"
@@ -25,11 +25,11 @@ type WxErrorResponse struct {
 }
 
 //Check check wx response if has error
-func (res *WxErrorResponse) Check() error {
+func (res *WxErrorResponse) Check() (err error) {
 	if res.Code != 0 {
-		return fmt.Errorf("code: %d, message: %s", res.Code, res.Message)
+		err = fmt.Errorf("code: %d, message: %s", res.Code, res.Message)
 	}
-	return nil
+	return
 }
 
 //PostResponseWithToken wechat request with token
