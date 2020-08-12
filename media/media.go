@@ -12,6 +12,6 @@ type WeMediaClient struct {
 	MessageConfig *core.MessageConfig
 	AuthHosts     []string //业务认证域名
 
-	eventHandlers       map[message.EventType]func(*message.MixMessage) (*message.Reply, error)
-	defaultEventHandler func(*message.MixMessage) (*message.Reply, error)
+	messageHandlers map[message.MsgType]func(*message.MixMessage) (*message.Reply, error)
+	defaultHandler  func(*message.MixMessage) (*message.Reply, error)
 }

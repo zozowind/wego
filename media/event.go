@@ -13,8 +13,8 @@ import (
 	"github.com/zozowind/wego/util"
 )
 
-//EventHandler 事件处理
-func (wm *WeMediaClient) EventHandler(r *http.Request) (response []byte, err error) {
+//MessageHandler 消息及事件处理
+func (wm *WeMediaClient) MessageHandler(r *http.Request) (response []byte, err error) {
 	if r.FormValue("echostr") != "" {
 		response = []byte(r.FormValue("echostr"))
 		return
@@ -26,15 +26,15 @@ func (wm *WeMediaClient) EventHandler(r *http.Request) (response []byte, err err
 	}
 
 	var reply *message.Reply
-	if nil != wm.eventHandlers {
-		handler, ok := wm.eventHandlers[msg.Event]
+	if nil != wm.messageHandlers {
+		handler, ok := wm.messageHandlers[msg.MsgType]
 		if ok {
 			reply, err = handler(msg)
 		} else {
-			if nil == wm.defaultEventHandler {
-				wm.defaultEventHandler = defaultEventHandler
+			if nil == wm.defaultHandler {
+				wm.defaultHandler = defaultMessageHandler
 			}
-			reply, err = wm.defaultEventHandler(msg)
+			reply, err = wm.defaultHandler(msg)
 		}
 	}
 
@@ -78,17 +78,17 @@ func (wm *WeMediaClient) EventHandler(r *http.Request) (response []byte, err err
 	return
 }
 
-//OnEvent 注册公众号的事件处理方法
-func (wm *WeMediaClient) OnEvent(e message.EventType, fn func(*message.MixMessage) (*message.Reply, error)) {
-	if wm.eventHandlers == nil {
-		wm.eventHandlers = map[message.EventType]func(*message.MixMessage) (*message.Reply, error){}
+//OnMessage 注册公众号的消息处理方法
+func (wm *WeMediaClient) OnMessage(typ message.MsgType, fn func(*message.MixMessage) (*message.Reply, error)) {
+	if wm.messageHandlers == nil {
+		wm.messageHandlers = map[message.MsgType]func(*message.MixMessage) (*message.Reply, error){}
 	}
-	wm.eventHandlers[e] = fn
+	wm.messageHandlers[typ] = fn
 }
 
-//SetDefaultEventHandler 设置默认的事件处理
-func (wm *WeMediaClient) SetDefaultEventHandler(fn func(*message.MixMessage) (*message.Reply, error)) {
-	wm.defaultEventHandler = fn
+//SetDefaultHandler 设置默认的事件处理
+func (wm *WeMediaClient) SetDefaultHandler(fn func(*message.MixMessage) (*message.Reply, error)) {
+	wm.defaultHandler = fn
 }
 
 func (wm *WeMediaClient) eventMessage(r *http.Request) (msg *message.MixMessage, random []byte, err error) {
@@ -132,7 +132,7 @@ func (wm *WeMediaClient) eventMessage(r *http.Request) (msg *message.MixMessage,
 	return
 }
 
-func defaultEventHandler(msg *message.MixMessage) (reply *message.Reply, err error) {
+func defaultMessageHandler(msg *message.MixMessage) (reply *message.Reply, err error) {
 	fmt.Printf("%v", msg)
 	return
 }
