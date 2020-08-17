@@ -48,7 +48,7 @@ type UserInfoRsp struct {
 	GroupID        int64    `json:"groupid"`
 	TagIDList      []int64  `json:"tagid_list"`
 	SubscribeScene string   `json:"subscribe_scene"`
-	QRScene        int64    `json:"qr_scene"`
+	QrScene        int64    `json:"qr_scene"`
 	QrSceneStr     string   `json:"qr_scene_str"`
 }
 
