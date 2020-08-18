@@ -1,4 +1,4 @@
-package app
+package core
 
 import (
 	"bytes"
@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/zozowind/wego/core"
 	"github.com/zozowind/wego/util"
 )
 
@@ -21,8 +20,8 @@ import (
 // 视频（video）：10MB，支持MP4格式
 // 缩略图（thumb）：64KB，支持JPG格式
 const (
-	uploadMediaURL = core.WxAPIURL + "/cgi-bin/media/upload?access_token=%s&type=%s" //临时素材上传
-	getMediaURL    = core.WxAPIURL + "/cgi-bin/media/get?access_token=%s"            //临时素材获取
+	uploadMediaURL = WxAPIURL + "/cgi-bin/media/upload?access_token=%s&type=%s" //临时素材上传
+	getMediaURL    = WxAPIURL + "/cgi-bin/media/get?access_token=%s"            //临时素材获取
 	//MediaTypeImage 临时素材图片
 	MediaTypeImage = "image"
 	// MediaTypeVoice 临时素材语音
@@ -42,14 +41,14 @@ type UploadMediaParam struct {
 
 //UploadMediaResponse 获取临时素材结果
 type UploadMediaResponse struct {
-	core.WxErrorResponse
+	WxErrorResponse
 	Type      string `json:"type"`
 	MediaID   string `json:"media_id"`
 	CreatedAt int64  `json:"created_at"`
 }
 
 //UploadMedia 上传临时素材
-func (client *WeAppClient) UploadMedia(param *UploadMediaParam) (res *UploadMediaResponse, err error) {
+func (client *WeBase) UploadMedia(param *UploadMediaParam) (res *UploadMediaResponse, err error) {
 	res = &UploadMediaResponse{}
 	data := []byte{}
 	token, err := client.Token()
@@ -80,12 +79,12 @@ func (client *WeAppClient) UploadMedia(param *UploadMediaParam) (res *UploadMedi
 
 //GetMediaResponse 获取临时素材结果
 type GetMediaResponse struct {
-	core.WxErrorResponse
+	WxErrorResponse
 	VideoURL string `json:"video_url"`
 }
 
 //GetMedia 获取临时素材
-func (client *WeAppClient) GetMedia(mediaID string) (res *GetMediaResponse, err error) {
+func (client *WeBase) GetMedia(mediaID string) (res *GetMediaResponse, err error) {
 	res = &GetMediaResponse{}
 
 	v := url.Values{}
