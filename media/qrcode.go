@@ -2,6 +2,7 @@ package media
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/url"
 
 	"github.com/zozowind/wego/core"
@@ -73,5 +74,5 @@ func (wm *WeMediaClient) QrcodeTicket(req *QrcodeReq) (qrcode *QrcodeRsp, err er
 //QrcodeURL 使用ticket换取二维码
 func QrcodeURL(ticket string) string {
 	ticket = url.QueryEscape(ticket)
-	return `https: //mp.weixin.qq.com/cgi-bin/showqrcode?ticket=${ticket}`
+	return fmt.Sprintf("https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=%s", ticket)
 }
