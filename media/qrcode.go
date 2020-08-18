@@ -55,7 +55,7 @@ func (wm *WeMediaClient) QrcodeTicket(req *QrcodeReq) (qrcode *QrcodeRsp, err er
 	params := url.Values{}
 	params.Set("access_token", token)
 
-	data, err := util.HTTPJsonPost(nil, menuCreateURL+"?"+params.Encode(), req)
+	data, err := util.HTTPJsonPost(nil, qrcodeURL+"?"+params.Encode(), req)
 	rsp := &core.WxErrorResponse{}
 	err = json.Unmarshal(data, rsp)
 	if nil != err {
