@@ -67,7 +67,7 @@ func (wm *WeMediaClient) QrcodeTicket(req *QrcodeReq) (qrcode *QrcodeRsp, err er
 		return
 	}
 	qrcode = &QrcodeRsp{}
-	err = json.Unmarshal(data, rsp)
+	err = json.Unmarshal(data, qrcode)
 	return
 }
 
