@@ -345,7 +345,7 @@ func ProfitSharing(wb *core.WeBase, req *ProfitSharingRequest) (rsp *ProfitShari
 	if len(req.ReceiverSlice) == 0 {
 		return nil, errmsg.GetError(errProfitSharingReq, "receiverSlice is not exist")
 	}
-	raw, err := json.Marshal(req.ReceiverSlice)
+	raw, err := util.JSONMarshal(req.ReceiverSlice)
 	if err != nil {
 		return nil, errmsg.GetError(errProfitSharingReq, fmt.Sprintf("receiverSlice marshal err:%s", err.Error()))
 	}
@@ -389,7 +389,7 @@ func MultiProfitSharing(wb *core.WeBase, req *ProfitSharingRequest) (rsp *Profit
 	if len(req.ReceiverSlice) == 0 {
 		return nil, errmsg.GetError(errProfitSharingReq, "receiverSlice is not exist")
 	}
-	raw, err := json.Marshal(req.ReceiverSlice)
+	raw, err := util.JSONMarshal(req.ReceiverSlice)
 	if err != nil {
 		return nil, errmsg.GetError(errProfitSharingReq, fmt.Sprintf("receiverSlice marshal err:%s", err.Error()))
 	}
@@ -464,7 +464,7 @@ func AddReceiverProfitSharing(wb *core.WeBase, req *ProfitSharingAddReceiverRequ
 	if len(req.ReceiverSlice) == 0 {
 		return nil, errmsg.GetError(errProfitSharingReq, "receiverSlice is not exist")
 	}
-	raw, err := json.Marshal(req.ReceiverSlice)
+	raw, err := util.JSONMarshal(req.ReceiverSlice)
 	if err != nil {
 		return nil, errmsg.GetError(errProfitSharingReq, fmt.Sprintf("receiverSlice marshal err:%s", err.Error()))
 	}
@@ -510,7 +510,7 @@ func RemoveReceiverProfitSharing(wb *core.WeBase, req *ProfitSharingRemoveReceiv
 	if len(req.ReceiverSlice) == 0 {
 		return nil, errmsg.GetError(errProfitSharingReq, "receiverSlice is not exist")
 	}
-	raw, err := json.Marshal(req.ReceiverSlice)
+	raw, err := util.JSONMarshal(req.ReceiverSlice)
 	if err != nil {
 		return nil, errmsg.GetError(errProfitSharingReq, fmt.Sprintf("receiverSlice marshal err:%s", err.Error()))
 	}
