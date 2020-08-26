@@ -1,11 +1,11 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"time"
 
+	"github.com/binlihpu/wego/util"
 	"github.com/zozowind/wego/core"
 )
 
@@ -25,7 +25,7 @@ func getTokenHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	fmt.Println(r.Form.Get("client"), "请求token")
 	token := serverGetToken()
-	data, _ := json.Marshal(token)
+	data, _ := util.JSONMarshal(token)
 	w.Write(data)
 }
 

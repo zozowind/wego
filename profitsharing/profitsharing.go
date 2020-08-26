@@ -2,7 +2,6 @@ package profitsharing
 
 import (
 	"crypto/tls"
-	"encoding/json"
 	"encoding/xml"
 	"errors"
 	"fmt"
@@ -172,7 +171,7 @@ func (wb *WeBase) ProfitSharing(req *ProfitSharingRequest) (rsp *ProfitSharingRe
 	if len(req.ReceiverSlice) == 0 {
 		return nil, errmsg.GetError(errProfitSharingReq, "receiverSlice is not exist")
 	}
-	raw, err := json.Marshal(req.ReceiverSlice)
+	raw, err := util.JSONMarshal(req.ReceiverSlice)
 	if err != nil {
 		return nil, errmsg.GetError(errProfitSharingReq, fmt.Sprintf("receiverSlice marshal err:%s", err.Error()))
 	}
@@ -204,7 +203,7 @@ func (wb *WeBase) MultiProfitSharing(req *ProfitSharingRequest) (rsp *ProfitShar
 	if len(req.ReceiverSlice) == 0 {
 		return nil, errmsg.GetError(errProfitSharingReq, "receiverSlice is not exist")
 	}
-	raw, err := json.Marshal(req.ReceiverSlice)
+	raw, err := util.JSONMarshal(req.ReceiverSlice)
 	if err != nil {
 		return nil, errmsg.GetError(errProfitSharingReq, fmt.Sprintf("receiverSlice marshal err:%s", err.Error()))
 	}
@@ -262,7 +261,7 @@ func (wb *WeBase) AddReceiverProfitSharing(req *ProfitSharingAddReceiverRequest)
 	if len(req.ReceiverSlice) == 0 {
 		return nil, errmsg.GetError(errProfitSharingReq, "receiverSlice is not exist")
 	}
-	raw, err := json.Marshal(req.ReceiverSlice)
+	raw, err := util.JSONMarshal(req.ReceiverSlice)
 	if err != nil {
 		return nil, errmsg.GetError(errProfitSharingReq, fmt.Sprintf("receiverSlice marshal err:%s", err.Error()))
 	}
@@ -292,7 +291,7 @@ func (wb *WeBase) RemoveReceiverProfitSharing(req *ProfitSharingAddReceiverReque
 	if len(req.ReceiverSlice) == 0 {
 		return nil, errmsg.GetError(errProfitSharingReq, "receiverSlice is not exist")
 	}
-	raw, err := json.Marshal(req.ReceiverSlice)
+	raw, err := util.JSONMarshal(req.ReceiverSlice)
 	if err != nil {
 		return nil, errmsg.GetError(errProfitSharingReq, fmt.Sprintf("receiverSlice marshal err:%s", err.Error()))
 	}

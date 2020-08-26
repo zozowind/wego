@@ -3,7 +3,6 @@ package util
 import (
 	"bytes"
 	"crypto/tls"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -39,7 +38,7 @@ func HTTPJsonPost(httpClient *http.Client, url string, param interface{}) ([]byt
 	}
 
 	//请求参数
-	body, err := json.Marshal(param)
+	body, err := JSONMarshal(param)
 	if err != nil {
 		return data, err
 	}
