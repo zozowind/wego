@@ -8,6 +8,16 @@ import (
 	"github.com/zozowind/wego/util"
 )
 
+//CustomerMessage .通用的结构
+type CustomerMessage interface {
+}
+
+//CustomerCommonReq 公共结构
+type CustomerCommonReq struct {
+	Touser  string `json:"touser"`
+	Msgtype string `json:"msgtype"`
+}
+
 //Customer .客服消息定义
 const (
 	TextMsgtype  = "text"
@@ -18,16 +28,14 @@ const (
 
 //CustomersContentReq .文字信息请求参数
 type CustomersContentReq struct {
-	Touser  string               `json:"touser"`
-	Msgtype string               `json:"msgtype"`
-	Text    CustomersContentInfo `json:"text"`
+	CustomerCommonReq
+	Text CustomersContentInfo `json:"text"`
 }
 
 //CustomersImageReq  图片信息请求参数
 type CustomersImageReq struct {
-	Touser  string             `json:"touser"`
-	Msgtype string             `json:"msgtype"`
-	Image   CustomersImageInfo `json:"image"`
+	CustomerCommonReq
+	Image CustomersImageInfo `json:"image"`
 }
 
 //CustomersImageInfo .图片信息请求图片信息
@@ -40,14 +48,8 @@ type CustomersContentInfo struct {
 	Content string `json:"content"`
 }
 
-//CustomerRsp .客服消息返回
-type CustomerRsp struct {
-	Errcode int    `json:"errcode"`
-	Errmsg  string `json:"errmsg"`
-}
-
-// SendCustomersContent 获取客服信息发送
-func (wm *WeMediaClient) SendCustomersContent(req *CustomersContentReq) (err error) {
+// SendCustomerMessage 获取客服信息发送
+func (wm *WeMediaClient) SendCustomerMessage(req CustomerMessage) (err error) {
 	token, err := wm.TokenServer.Token()
 	if nil != err {
 		return
@@ -62,29 +64,5 @@ func (wm *WeMediaClient) SendCustomersContent(req *CustomersContentReq) (err err
 		return
 	}
 	err = rsp.Check()
-	if nil != err {
-		return
-	}
-	return
-}
-
-// SendCustomersPoster 获取客服图片发送
-func (wm *WeMediaClient) SendCustomersPoster(req *CustomersImageReq) (err error) {
-	token, err := wm.TokenServer.Token()
-	if nil != err {
-		return
-	}
-	params := url.Values{}
-	params.Set("access_token", token)
-	data, err := util.HTTPJsonPost(nil, customerSendURL+"?"+params.Encode(), req)
-	rsp := &core.WxErrorResponse{}
-	err = json.Unmarshal(data, rsp)
-	if nil != err {
-		return
-	}
-	err = rsp.Check()
-	if nil != err {
-		return
-	}
 	return
 }
